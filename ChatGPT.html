@@ -1,219 +1,432 @@
-<!-- VERSION 2.0 - Remplacer le contenu précédent -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- Ajouter ces boutons dans la barre d'onglets -->
+<title>Projet Voyage Monde 2027+</title>
 
-<button class="tab-btn" onclick="openTab('residence')">Visas & Résidence</button>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+--bg:#eef4f3;
+--card:#ffffff;
+--accent:#5f8f8b;
+--accent2:#8aa8a5;
+--text:#23303b;
+--shadow:0 6px 18px rgba(0,0,0,0.08);
+}
+
+body{
+margin:0;
+font-family:'Inter',sans-serif;
+background:var(--bg);
+color:var(--text);
+}
+
+header{
+background:linear-gradient(135deg,#496d73,#7da3a0);
+color:white;
+padding:50px;
+text-align:center;
+}
+
+header h1{
+margin:0;
+font-size:2.5rem;
+}
+
+header p{
+opacity:0.95;
+}
+
+.tabs{
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+background:white;
+box-shadow:var(--shadow);
+}
+
+.tab-btn{
+border:none;
+background:none;
+padding:16px 20px;
+cursor:pointer;
+font-size:15px;
+}
+
+.tab-btn:hover{
+background:#edf3f3;
+}
+
+.tab-content{
+display:none;
+padding:30px;
+max-width:1200px;
+margin:auto;
+}
+
+.active{
+display:block;
+}
+
+.card{
+background:var(--card);
+padding:25px;
+border-radius:15px;
+margin-bottom:25px;
+box-shadow:var(--shadow);
+}
+
+h2{
+color:var(--accent);
+}
+
+.timeline{
+display:flex;
+align-items:center;
+gap:15px;
+flex-wrap:wrap;
+margin-top:15px;
+}
+
+.step{
+background:#dce9e8;
+padding:10px 18px;
+border-radius:30px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th,td{
+padding:12px;
+border-bottom:1px solid #ddd;
+}
+
+th{
+background:#edf3f3;
+}
+
+.progress{
+height:24px;
+background:#d7e5e3;
+border-radius:20px;
+overflow:hidden;
+margin-top:10px;
+}
+
+.bar{
+height:100%;
+background:linear-gradient(90deg,#5f8f8b,#7db5ae);
+width:85%;
+}
+
+ul li{
+margin-bottom:8px;
+}
+
+.good{
+color:#2d7a45;
+font-weight:bold;
+}
+
+.warning{
+color:#aa7a00;
+font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>Projet Nomade 2027 → 2032-2042</h1>
+<p>Tour du monde lent • Backpack • WWOOF • Workaway • Travail saisonnier</p>
+</header>
+
+<div class="tabs">
+
+<button class="tab-btn" onclick="openTab('vision')">Vision</button>
+<button class="tab-btn" onclick="openTab('itineraire')">Itinéraires</button>
+<button class="tab-btn" onclick="openTab('budget')">Budget</button>
+<button class="tab-btn" onclick="openTab('travail')">Revenus</button>
+<button class="tab-btn" onclick="openTab('residence')">Visas</button>
+<button class="tab-btn" onclick="openTab('risques')">Peurs & Solutions</button>
 <button class="tab-btn" onclick="openTab('sante')">Santé</button>
+<button class="tab-btn" onclick="openTab('materiel')">Matériel</button>
 <button class="tab-btn" onclick="openTab('bucketlist')">Lieux Prioritaires</button>
-<button class="tab-btn" onclick="openTab('opportunites')">Opportunités Rares</button>
 
-<!-- Remplacer l'onglet Budget existant par celui-ci -->
+</div>
+
+<div id="vision" class="tab-content active">
+
+<div class="card">
+
+<h2>Durée Flexible</h2>
+
+<div class="timeline">
+<div class="step">5 ans minimum</div>
+<div class="step">8-10 ans probable</div>
+<div class="step">15 ans possible</div>
+</div>
+
+<p>
+Le projet n'est pas une course autour du monde.
+Chaque destination peut devenir un lieu de vie temporaire de quelques semaines à plusieurs années.
+</p>
+
+</div>
+
+<div class="card">
+
+<h2>Faisabilité Globale</h2>
+
+<p class="good">
+Projet financièrement réaliste avec travail saisonnier.
+</p>
+
+<div class="progress">
+<div class="bar"></div>
+</div>
+
+<p>
+Le principal risque n'est pas le budget mais la gestion administrative,
+les visas et le maintien de la motivation sur plusieurs années.
+</p>
+
+</div>
+
+</div>
+
+<div id="itineraire" class="tab-content">
+
+<div class="card">
+
+<h2>Parcours conseillé</h2>
+
+<ul>
+<li>Norvège (6 à 12 mois)</li>
+<li>Écosse (2 à 6 mois)</li>
+<li>Irlande (1 à 4 mois)</li>
+<li>Balkans (6 à 12 mois)</li>
+<li>Turquie (2 à 6 mois)</li>
+<li>Géorgie (2 à 12 mois)</li>
+<li>Asie du Sud-Est (1 à 3 ans)</li>
+<li>Chine (2 à 6 mois)</li>
+<li>Corée du Sud (2 à 6 mois)</li>
+<li>Japon (3 à 12 mois)</li>
+<li>Océanie (1 à 3 ans)</li>
+<li>Canada (3 à 12 mois)</li>
+<li>États-Unis</li>
+<li>Mexique</li>
+<li>Amérique du Sud (1 à 3 ans)</li>
+</ul>
+
+</div>
+
+</div>
 
 <div id="budget" class="tab-content">
 
 <div class="card">
-<h2>Scénario 5 ans</h2>
 
-<table>
-<tr><th>Poste</th><th>Montant</th></tr>
-<tr><td>Assurance</td><td>12 000 €</td></tr>
-<tr><td>Transport</td><td>8 000 €</td></tr>
-<tr><td>Matériel</td><td>5 000 €</td></tr>
-<tr><td>Visas</td><td>3 000 €</td></tr>
-<tr><td>Vie quotidienne</td><td>18 000 €</td></tr>
-<tr><td>Urgences</td><td>4 000 €</td></tr>
-<tr><th>Total</th><th>50 000 €</th></tr>
-</table>
-
-<p>Capital de départ : 30 000 €</p>
-<p>À financer : 20 000 € (~333 €/mois)</p>
-
-</div>
-
-<div class="card">
-
-<h2>Scénario 10 ans</h2>
-
-<table>
-<tr><th>Poste</th><th>Montant</th></tr>
-<tr><td>Assurance</td><td>24 000 €</td></tr>
-<tr><td>Transport</td><td>12 000 €</td></tr>
-<tr><td>Matériel</td><td>10 000 €</td></tr>
-<tr><td>Visas</td><td>6 000 €</td></tr>
-<tr><td>Vie quotidienne</td><td>30 000 €</td></tr>
-<tr><td>Urgences</td><td>8 000 €</td></tr>
-<tr><th>Total</th><th>90 000 €</th></tr>
-</table>
-
-<p>À financer : 60 000 € (~500 €/mois)</p>
-
-</div>
-
-<div class="card">
-
-<h2>Scénario 15 ans</h2>
-
-<table>
-<tr><th>Poste</th><th>Montant</th></tr>
-<tr><td>Assurance</td><td>36 000 €</td></tr>
-<tr><td>Transport</td><td>15 000 €</td></tr>
-<tr><td>Matériel</td><td>15 000 €</td></tr>
-<tr><td>Visas</td><td>10 000 €</td></tr>
-<tr><td>Vie quotidienne</td><td>45 000 €</td></tr>
-<tr><td>Urgences</td><td>10 000 €</td></tr>
-<tr><th>Total</th><th>131 000 €</th></tr>
-</table>
-
-<p>À financer : 101 000 € (~560 €/mois)</p>
-
-</div>
-
-</div>
-
-<!-- NOUVEL ONGLET -->
-
-<div id="residence" class="tab-content">
-
-<div class="card">
-
-<h2>Visas & Résidence</h2>
+<h2>Budget avec travail saisonnier</h2>
 
 <table>
 
 <tr>
-<th>Pays</th>
-<th>Durée standard</th>
+<th>Scénario</th>
+<th>Dépenses</th>
+<th>Revenus estimés</th>
+<th>Besoin réel</th>
 </tr>
 
-<tr><td>Norvège</td><td>90 jours Schengen</td></tr>
-<tr><td>Écosse / Royaume-Uni</td><td>6 mois</td></tr>
-<tr><td>Irlande</td><td>90 jours</td></tr>
-<tr><td>Géorgie</td><td>1 an</td></tr>
-<tr><td>Japon</td><td>90 jours</td></tr>
-<tr><td>Corée du Sud</td><td>90 jours</td></tr>
-<tr><td>Canada</td><td>6 mois</td></tr>
-<tr><td>Mexique</td><td>jusqu'à 180 jours</td></tr>
-<tr><td>Turquie</td><td>90/180 jours</td></tr>
+<tr>
+<td>5 ans</td>
+<td>50 000 €</td>
+<td>25 000 €</td>
+<td>25 000 €</td>
+</tr>
+
+<tr>
+<td>10 ans</td>
+<td>90 000 €</td>
+<td>70 000 €</td>
+<td>20 000 €</td>
+</tr>
+
+<tr>
+<td>15 ans</td>
+<td>131 000 €</td>
+<td>120 000 €</td>
+<td>11 000 €</td>
+</tr>
 
 </table>
 
+<p>
+Capital de départ : 30 000 €.
+</p>
+
+<p class="good">
+Même dans le scénario 15 ans, le projet peut théoriquement être auto-financé.
+</p>
+
+</div>
+
+</div>
+
+<div id="travail" class="tab-content">
+
+<div class="card">
+
+<h2>Zones les plus rentables</h2>
+
+<ul>
+<li>Norvège → pêche, agriculture, tourisme</li>
+<li>Australie → fermes et récoltes</li>
+<li>Nouvelle-Zélande → vendanges</li>
+<li>Canada → stations de ski</li>
+<li>Japon → tourisme saisonnier</li>
+</ul>
+
+<p>
+Objectif recommandé :
+2 à 4 mois de travail rémunéré par an.
+</p>
+
+</div>
+
+</div>
+
+<div id="risques" class="tab-content">
+
+<div class="card">
+
+<h2>Peur : manquer d'argent</h2>
+
+<p>
+Toujours conserver 4 000 € d'urgence séparés.
+Travail saisonnier dans un pays à fort salaire dès que le budget descend sous un seuil fixé.
+</p>
+
 </div>
 
 <div class="card">
 
-<h2>Suivi Administratif</h2>
+<h2>Peur : problème médical</h2>
 
-<ul>
-<li>Passeports</li>
-<li>Permis international</li>
-<li>Banques</li>
-<li>Fiscalité</li>
-<li>Assurance santé</li>
-<li>Sauvegardes numériques</li>
-</ul>
+<p>
+Assurance internationale + dossier médical numérique + téléconsultation.
+</p>
+
+</div>
+
+<div class="card">
+
+<h2>Peur : perte des papiers</h2>
+
+<p>
+Copies cloud, clé USB chiffrée, copies papier.
+</p>
+
+</div>
+
+<div class="card">
+
+<h2>Peur : fatigue ou perte de sens</h2>
+
+<p>
+Prévoir des bases arrière de plusieurs mois.
+Ralentir le voyage plutôt que multiplier les destinations.
+</p>
+
+</div>
+
+<div class="card">
+
+<h2>Peur : retour forcé</h2>
+
+<p>
+Conserver un compte bancaire français, une adresse administrative stable et une réserve financière.
+</p>
 
 </div>
 
 </div>
 
-<!-- NOUVEL ONGLET -->
+<div id="residence" class="tab-content">
+<div class="card">
+<h2>Visas & Résidence</h2>
+<p>Suivi des durées de séjour, PVT, renouvellements de passeport, fiscalité et assurances.</p>
+</div>
+</div>
 
 <div id="sante" class="tab-content">
-
 <div class="card">
-
-<h2>Santé Longue Durée</h2>
-
+<h2>Santé</h2>
 <ul>
-<li>Bilan médical complet avant départ</li>
+<li>Bilan médical complet</li>
 <li>Bilan dentaire</li>
 <li>Vaccinations</li>
-<li>Téléconsultation internationale</li>
-<li>Trousse médicale évolutive</li>
-<li>Assurance rapatriement</li>
-<li>Dossier médical numérisé</li>
+<li>Trousse médicale</li>
+<li>Téléconsultation</li>
 </ul>
-
+</div>
 </div>
 
+<div id="materiel" class="tab-content">
+<div class="card">
+<h2>Matériel Essentiel</h2>
+<ul>
+<li>Sacs 50L + 20L</li>
+<li>Tente légère</li>
+<li>Duvets</li>
+<li>Filtre à eau</li>
+<li>Batterie externe</li>
+<li>Ordinateur portable</li>
+</ul>
 </div>
-
-<!-- NOUVEL ONGLET -->
+</div>
 
 <div id="bucketlist" class="tab-content">
-
 <div class="card">
-
-<h2>Norvège</h2>
-
+<h2>Lieux Prioritaires</h2>
 <ul>
 <li>Lofoten</li>
 <li>Senja</li>
-<li>Nordkapp</li>
-<li>Tromsø</li>
-<li>Parc national de Jotunheimen</li>
-</ul>
-
-</div>
-
-<div class="card">
-
-<h2>Écosse</h2>
-
-<ul>
 <li>Isle of Skye</li>
-<li>Cairngorms</li>
-<li>Outer Hebrides</li>
-</ul>
-
-</div>
-
-<div class="card">
-
-<h2>Géorgie</h2>
-
-<ul>
 <li>Svaneti</li>
-<li>Kazbegi</li>
-<li>Tusheti</li>
-</ul>
-
-</div>
-
-<div class="card">
-
-<h2>Japon</h2>
-
-<ul>
 <li>Yakushima</li>
-<li>Kumano Kodo</li>
 <li>Hokkaido</li>
+<li>Patagonie</li>
+<li>Yukon</li>
 </ul>
-
+</div>
 </div>
 
-</div>
+<script>
 
-<!-- NOUVEL ONGLET -->
+function openTab(tabId){
 
-<div id="opportunites" class="tab-content">
+let tabs=document.querySelectorAll('.tab-content');
 
-<div class="card">
+tabs.forEach(tab=>{
+tab.classList.remove('active');
+});
 
-<h2>Opportunités Rares</h2>
+document.getElementById(tabId).classList.add('active');
 
-<ul>
-<li>Convoyage de voiliers</li>
-<li>Équipage transatlantique</li>
-<li>Reconstitutions vikings</li>
-<li>Écovillages</li>
-<li>Monastères</li>
-<li>Gardiennage de maisons</li>
-<li>Réserves naturelles</li>
-<li>Stations scientifiques</li>
-<li>Refuges de montagne</li>
-</ul>
+}
 
-</div>
+</script>
 
-</div>
+</body>
+</html>
