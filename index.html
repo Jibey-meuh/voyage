@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Hub d'IA</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+        h1 { margin-bottom: 2rem; color: #2c3e50; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        .card {
+            background: white;
+            padding: 20px 40px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #3498db;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s, background 0.2s;
+            text-align: center;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            background: #3498db;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Choisissez votre Assistant</h1>
+
+    <div class="grid">
+        <a href="Gemini.html" class="card">Gemini</a>
+        <a href="Claude.html" class="card">Claude</a>
+        <a href="Deepseek.html" class="card">Deepseek</a>
+        <a href="ChatGPT.html" class="card">ChatGPT</a>
+    </div>
+
+</body>
+</html>

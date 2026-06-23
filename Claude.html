@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voyage 2027 — Carnet de Route</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0D1B2A;
+    --navy-mid: #162033;
+    --amber: #E8A838;
+    --amber-light: #F2C46D;
+    --ice: #A8C5DA;
+    --ice-light: #C8DDE8;
+    --off-white: #F0EDE6;
+    --charcoal: #2C3E50;
+    --muted: #7A8FA0;
+    --green: #4CAF7D;
+    --red: #E05252;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy);
+    color: var(--off-white);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+    border-bottom: 1px solid rgba(168,197,218,0.15);
+    padding: 28px 40px 0;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 6px;
+  }
+
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--amber);
+    letter-spacing: 0.02em;
+  }
+
+  header .subtitle {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-weight: 300;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .header-meta {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 24px;
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
+  .header-meta span { color: var(--ice); }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: none;
+  }
+
+  .tab-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 12px 22px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .tab-btn:hover { color: var(--ice-light); }
+
+  .tab-btn.active {
+    color: var(--amber);
+    border-bottom: 2px solid var(--amber);
+  }
+
+  /* MAIN */
+  main { padding: 36px 40px; max-width: 1100px; margin: 0 auto; }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* SECTION TITLES */
+  .section-eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 8px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    color: var(--off-white);
+    margin-bottom: 6px;
+  }
+
+  .section-intro {
+    font-size: 0.87rem;
+    color: var(--muted);
+    max-width: 680px;
+    line-height: 1.65;
+    margin-bottom: 32px;
+  }
+
+  /* ITINERARY CARDS */
+  .routes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 36px;
+  }
+
+  .route-card {
+    background: var(--navy-mid);
+    border: 1px solid rgba(168,197,218,0.12);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .route-card:hover { border-color: rgba(232,168,56,0.3); }
+
+  .route-header {
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid rgba(168,197,218,0.08);
+  }
+
+  .route-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    color: var(--amber);
+    margin-bottom: 4px;
+  }
+
+  .route-tagline {
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .route-body { padding: 16px 20px; }
+
+  .route-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .stat-item { }
+  .stat-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 2px;
+  }
+  .stat-val {
+    font-size: 0.92rem;
+    color: var(--ice);
+    font-weight: 500;
+  }
+
+  .phase-list { list-style: none; }
+
+  .phase-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(168,197,218,0.06);
+    font-size: 0.8rem;
+  }
+
+  .phase-item:last-child { border-bottom: none; }
+
+  .phase-num {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(232,168,56,0.12);
+    border: 1px solid rgba(232,168,56,0.3);
+    color: var(--amber);
+    font-size: 0.65rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .phase-content { flex: 1; }
+  .phase-region {
+    font-weight: 600;
+    color: var(--off-white);
+    display: block;
+    margin-bottom: 2px;
+  }
+  .phase-detail { color: var(--muted); line-height: 1.4; }
+
+  .phase-tag {
+    font-size: 0.62rem;
+    padding: 2px 7px;
+    border-radius: 10px;
+    margin-top: 4px;
+    display: inline-block;
+  }
+  .tag-work { background: rgba(76,175,125,0.15); color: var(--green); border: 1px solid rgba(76,175,125,0.25); }
+  .tag-explore { background: rgba(168,197,218,0.1); color: var(--ice); border: 1px solid rgba(168,197,218,0.2); }
+  .tag-volunteer { background: rgba(232,168,56,0.1); color: var(--amber-light); border: 1px solid rgba(232,168,56,0.2); }
+
+  .route-footer {
+    padding: 14px 20px;
+    background: rgba(168,197,218,0.04);
+    border-top: 1px solid rgba(168,197,218,0.08);
+    font-size: 0.76rem;
+    color: var(--muted);
+  }
+
+  .route-footer strong { color: var(--amber-light); }
+
+  /* NORWAY CROSSING */
+  .crossing-banner {
+    background: linear-gradient(90deg, rgba(13,27,42,0.95), rgba(22,32,51,0.95));
+    border: 1px solid rgba(232,168,56,0.2);
+    border-radius: 4px;
+    padding: 18px 22px;
+    margin-bottom: 36px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .crossing-icon { font-size: 1.8rem; }
+
+  .crossing-content h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    color: var(--amber);
+    margin-bottom: 4px;
+  }
+
+  .crossing-content p { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+  .crossing-content p strong { color: var(--ice); }
+
+  /* BUDGET TAB */
+  .budget-overview {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .budget-kpi {
+    background: var(--navy-mid);
+    border: 1px solid rgba(168,197,218,0.1);
+    border-radius: 4px;
+    padding: 18px 20px;
+  }
+
+  .kpi-label {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .kpi-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    color: var(--amber);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .kpi-sub { font-size: 0.72rem; color: var(--muted); }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    margin-bottom: 28px;
+  }
+
+  thead tr {
+    background: rgba(168,197,218,0.06);
+    border-bottom: 1px solid rgba(168,197,218,0.15);
+  }
+
+  th {
+    text-align: left;
+    padding: 11px 14px;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(168,197,218,0.06);
+    color: var(--off-white);
+    vertical-align: top;
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.highlight { color: var(--amber-light); font-weight: 500; }
+  td.positive { color: var(--green); }
+  td.negative { color: var(--red); }
+  td.neutral { color: var(--ice); }
+
+  .table-section-header td {
+    background: rgba(232,168,56,0.06);
+    color: var(--amber);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 8px 14px;
+    border-top: 1px solid rgba(232,168,56,0.15);
+  }
+
+  .total-row td {
+    background: rgba(168,197,218,0.05);
+    font-weight: 600;
+    border-top: 1px solid rgba(168,197,218,0.15);
+  }
+
+  /* INCOME TABLE */
+  .income-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 28px;
+  }
+
+  .income-card {
+    background: var(--navy-mid);
+    border: 1px solid rgba(76,175,125,0.15);
+    border-radius: 4px;
+    padding: 18px 20px;
+  }
+
+  .income-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    color: var(--green);
+    margin-bottom: 12px;
+  }
+
+  .income-card table { margin-bottom: 0; }
+
+  /* VISA TAB */
+  .visa-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 28px;
+  }
+
+  .visa-card {
+    background: var(--navy-mid);
+    border: 1px solid rgba(168,197,218,0.1);
+    border-radius: 4px;
+    padding: 18px 20px;
+  }
+
+  .visa-card h3 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ice);
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(168,197,218,0.1);
+  }
+
+  .visa-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    font-size: 0.78rem;
+    border-bottom: 1px solid rgba(168,197,218,0.04);
+  }
+
+  .visa-item:last-child { border-bottom: none; }
+  .visa-country { color: var(--off-white); }
+  .visa-status {
+    font-size: 0.68rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .v-free { background: rgba(76,175,125,0.12); color: var(--green); border: 1px solid rgba(76,175,125,0.2); }
+  .v-evisa { background: rgba(168,197,218,0.1); color: var(--ice); border: 1px solid rgba(168,197,218,0.2); }
+  .v-required { background: rgba(224,82,82,0.1); color: var(--red); border: 1px solid rgba(224,82,82,0.2); }
+  .v-voa { background: rgba(232,168,56,0.1); color: var(--amber-light); border: 1px solid rgba(232,168,56,0.2); }
+
+  .checklist { list-style: none; }
+  .checklist li {
+    padding: 7px 0;
+    font-size: 0.8rem;
+    color: var(--muted);
+    border-bottom: 1px solid rgba(168,197,218,0.05);
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist li::before { content: '→'; color: var(--amber); flex-shrink: 0; margin-top: 1px; }
+  .checklist li strong { color: var(--off-white); }
+
+  /* WORK TAB */
+  .work-highlight {
+    background: linear-gradient(90deg, rgba(76,175,125,0.08), rgba(13,27,42,0));
+    border-left: 3px solid var(--green);
+    padding: 14px 18px;
+    border-radius: 0 4px 4px 0;
+    margin-bottom: 24px;
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .work-highlight strong { color: var(--off-white); }
+
+  .platform-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .platform-card {
+    background: var(--navy-mid);
+    border: 1px solid rgba(168,197,218,0.1);
+    border-radius: 4px;
+    padding: 16px 18px;
+  }
+
+  .platform-card h4 {
+    font-weight: 600;
+    color: var(--amber-light);
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+  }
+
+  .platform-card .plat-type {
+    font-size: 0.68rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+
+  .platform-card p {
+    font-size: 0.77rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .divider {
+    height: 1px;
+    background: rgba(168,197,218,0.08);
+    margin: 28px 0;
+  }
+
+  .note-box {
+    background: rgba(232,168,56,0.05);
+    border: 1px solid rgba(232,168,56,0.15);
+    border-radius: 4px;
+    padding: 14px 18px;
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .note-box strong { color: var(--amber-light); }
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <h1>Voyage 2027 — Carnet de Route</h1>
+    <span class="subtitle">Backpack · 5 ans minimum · Bordeaux → Monde</span>
+  </div>
+  <div class="header-meta">
+    <div>Départ <span>Septembre 2027</span></div>
+    <div>Voyageurs <span>F23 · H37</span></div>
+    <div>Budget initial <span>30 000 €</span></div>
+    <div>Durée <span>5 – 15 ans</span></div>
+    <div>Mode <span>WWOOF · Workaway · Wild camping · Hitchhiking</span></div>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('itineraires')">Itinéraires</button>
+    <button class="tab-btn" onclick="showTab('budget')">Budget global</button>
+    <button class="tab-btn" onclick="showTab('visas')">Visas & Admin</button>
+    <button class="tab-btn" onclick="showTab('travail')">Travail en route</button>
+    <button class="tab-btn" onclick="showTab('essentiels')">Points clés</button>
+  </div>
+</header>
+
+<main>
+
+<!-- ═══════════════ TAB 1 : ITINÉRAIRES ═══════════════ -->
+<div id="tab-itineraires" class="tab-panel active">
+  <p class="section-eyebrow">Trois variantes de route</p>
+  <h2 class="section-title">Choisir sa trajectoire</h2>
+  <p class="section-intro">Trois philosophies de voyage, une même colonne vertébrale : Norvège (moteur financier) → Europe → Asie → Amériques → retour Asie. Les phases ▸ travail génèrent des revenus, les phases ▸ volontariat couvrent logement + repas, les phases ▸ exploration puisent dans les réserves.</p>
+
+  <div class="routes-grid">
+
+    <!-- ROUTE A -->
+    <div class="route-card">
+      <div class="route-header">
+        <div class="route-name">La Boréale</div>
+        <div class="route-tagline">Grand Nord en premier, retour tempéré progressif</div>
+      </div>
+      <div class="route-body">
+        <div class="route-stats">
+          <div class="stat-item"><span class="stat-label">Durée cible</span><span class="stat-val">5 – 6 ans</span></div>
+          <div class="stat-item"><span class="stat-label">Coût moyen/j</span><span class="stat-val">~28 €/pers</span></div>
+          <div class="stat-item"><span class="stat-label">Phases travail</span><span class="stat-val">2 majeures</span></div>
+          <div class="stat-item"><span class="stat-label">Complexité visa</span><span class="stat-val">Modérée</span></div>
+        </div>
+        <ul class="phase-list">
+          <li class="phase-item">
+            <div class="phase-num">1</div>
+            <div class="phase-content">
+              <span class="phase-region">🇧🇻 Norvège · 6 mois</span>
+              <span class="phase-detail">Oslo → Lofoten → Tromsø, WWOOF fermes, wild camping Allemannsretten</span>
+              <span class="phase-tag tag-work">▸ Travail saisonnier</span>
+            </div>
+          </li>
+          <li class="phase-item">
+            <div class="phase-num">2</div>
+            <div class="phase-content">
+              <span class="phase-region">🏴󠁧󠁢󠁳󠁣󠁴󠁿🍀 Écosse · Irlande · 3 mois</span>
+              <span class="phase-detail">Ferry Bergen→Newcastle, Highlands, Dublin, côtes ouest</span>
+              <span class="phase-tag tag-volunteer">▸ Workaway</span>
+            </div>
+          </li>
+          <li class="phase-item">
+            <div class="phase-num">3</div>
+            <div class="phase-content">
+              <span class="phase-region">🌍 Balkans · Europe Est · 5 mois</span>
+              <span class="phase-detail">Slovénie, Croatie, Albanie, Macédoine, Serbie, Roumanie, Pologne</span>
+              <span class="phase-tag tag-explore">▸ Exploration van</span>
+            </div>
+          </li>
+          <li class="phase-item">
+            <div class="phase-num">4</div>
+            <div class="phase-content">
+              <span class="phase-region">🌏 Asie du Sud-Est · 8 mois</span>
+              <span class="phase-detail">Thaïlande, Vietnam, Cambodge, Laos, Indonésie</span>
+              <span class="phase-tag tag-volunteer">▸ Workaway / HelpX</span>
+            </div>
+          </li>
+          <li class="phase-item">
+            <div class="phase-num">5</div>
+            <div class="phase-content">
+              <span class="phase-region">🌎 Amériques · 14 mois</span>
+              <span class="phase-detail">Canada, Yellowstone, Louisiane, Mexique, Colombie → Patagonie</span>
+              <span class="phase-tag tag-explore">▸ Exploration</span>
+            </div>
+          </li>
+          <li class="phase-item">
+            <div class="phase-num">6</div>
+            <div class="phase-content">
+              <span class="phase-region">🇹🇷🇬🇪🇨🇳🇰🇷🇯🇵 Asie centrale + Est · 12 mois</span>
+              <span class="phase-detail">Turquie, Géorgie, Chine, Corée du Sud, Japon</span>
+              <span class="phase-tag tag-work">▸ Enseignement anglais</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="route-footer"><strong>Atout :</strong> Norvège en premier maximise la trésorerie avant les dépenses élevées (Amériques, Japon).</div>
+    </div>
+
+    <!-- ROUTE B -->
+    <div class="route-card">
+      <div class="route-header">
+        <div class="route-name">L'Australe</div>
+        <div class="route-tagline">Boucle logique par fuseau horaire, Océanie incluse</div>
+      </div>
+      <div class="route-body">
+        <div class="route-stats">
+          <div class="stat-item"><span class="stat-label">Durée cible</span><span class="stat-val">6 – 7 ans</span></div>
+          <div class="stat-item"><span class="stat-label">Coût moyen/j</span><span class="stat-val">~31 €/pers</span></div>
+          <div class="stat-item"><span class="stat-label">Phases travail</span><span class="stat-val">3 majeures</span></div>
+          <div class="stat-item"><span class="stat-label">Complexité visa</span><span class="stat-val">Élevée</span></div>
+        </div>
+        <ul class="phase-list">
+          <li class="phase-item">
+            <div class="phase-num">1</div>
+            <div class="phase-content">
+              <span class="phase-region">🇧🇻 Norvège · 6 mois</span>
+              <span class="phase-detail">Même circuit Boréale, priorité revenus</span>
+              <span class="phase-tag tag-work">▸ Travail saisonnier</span>
+            </div>
+          </li>
+          <li class="phase-item">
+            <div class="phase-num">2</div>
+            <div class="phase-content">
+              <span class="phase-region">🏴󠁧󠁢󠁳󠁣󠁴󠁿🍀 Îles Britanniques · 2 mois</span>
+              <span class="phase-detail">Écosse, Irlande, pays de Galles en hitchhiking</span>
+              <span class="phase-tag tag-volunteer">▸ Workaway</span>
+            </div>
+          </li>
+          <li class="phase-item">
+            <div class="phase-num">3</div>
+            <div class="phase-content">
+              <span class="phase-region">🌍 Europe · Moyen-Orient · 6 mois</span>
+              <span class="phase-detail">Balkans, Turquie, Géorgie, transit Caucase</span>
+              <span class="phase-tag tag-explore">▸ Exploration</span>
+            </div>
+          </li>
+          <li class="phase-item">
+            <div class="phase-num">4</div>
+            <div class="phase-content">
+              <span class="phase-region">🌏 Asie du Sud-Est · Océanie · 18 mois</span>
+              <span class="phase-detail">SEA → Australie (farm work) → Nouvelle-Zélande → retour SEA</span>
+              <span class="phase-tag tag-work">▸ Farm work Australie (F23 uniquement)</span>
+            </div>
+          </li>
+          <li class="phase-item">
+            <div class="phase-num">5</div>
+            <div class="phase-content">
+              <span class="phase-region">🇨🇳🇰🇷🇯🇵 Asie de l'Est · 8 mois</span>
+              <span class="phase-detail">Chine, Corée, Japon (enseignement anglais)</span>
+              <span class="phase-tag tag-work">▸ Enseignement (F23 WHV Japon)</span>
+            </div>
+          </li>
+          <li class="phase-item">
+            <div class="phase-num">6</div>
+            <div class="phase-content">
+              <span class="phase-region">🌎 Amériques · 14 mois</span>
+              <span class="phase-detail">Canada, USA, Mexique, Amérique du Sud</span>
+              <span class="phase-tag tag-explore">▸ Exploration + WWOOF</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="route-footer"><strong>Atout :</strong> Maximise les WHV pour F23 (Australie + NZ + Japon) avant 31 ans. Nécessite billets aériens intercontinentaux.</div>
+    </div>
+
+    <!-- ROUTE C -->
+    <div class="route-card">
+      <div class="route-header">
+        <div class="route-name">La Spirale</div>
+        <div class="route-tagline">Rayonnement depuis l'Europe, retours périodiques</div>
+      </div>
+      <div class="route-body">
+        <div class="route-stats">
+          <div class="stat-item"><span class="stat-label">Durée cible</span><span class="stat-val">5 ans</span></div>
+          <div class="stat-item"><span class="stat-label">Coût moyen/j</span><span class="stat-val">~25 €/pers</span></div>
+          <div class="stat-item"><span class="stat-label">Phases travail</span><span class="stat-val">2 + ponctuelles</span></div>
+          <div class="stat-item"><span class="stat-label">Complexité visa</span><span class="stat-val">Faible</span></div>
+        </div>
+        <ul class="phase-list">
+          <li class="phase-item">
+            <div class="phase-num">1</div>
+            <div class="phase-content">
+              <span class="phase-region">🇧🇻 Norvège · 8 mois</span>
+              <span class="phase-detail">Séjour prolongé, 2 saisons de travail, économies maximisées</span>
+              <span class="phase-tag tag-work">▸ Double saison rémunérée</span>
+            </div>
+          </li>
+          <li class="phase-item">
+            <div class="phase-num">2</div>
+            <div class="phase-content">
+              <span class="phase-region">🌍 Europe complète · 8 mois</span>
+              <span class="phase-detail">Îles Brit., Balkans, Europe Est, van lent, max WWOOF</span>
+              <span class="phase-tag tag-volunteer">▸ Volontariat intensif</span>
+            </div>
+          </li>
+          <li class="phase-item">
+            <div class="phase-num">3</div>
+            <div class="phase-content">
+              <span class="phase-region">🌏 Asie du Sud-Est · 10 mois</span>
+              <span class="phase-detail">Circuit terrestre SEA, télétravail ou enseignement</span>
+              <span class="phase-tag tag-work">▸ Remote work / cours anglais</span>
+            </div>
+          </li>
+          <li class="phase-item">
+            <div class="phase-num">4</div>
+            <div class="phase-content">
+              <span class="phase-region">🇹🇷🇬🇪 Caucase · 3 mois</span>
+              <span class="phase-detail">Turquie, Géorgie, coût de vie très bas</span>
+              <span class="phase-tag tag-explore">▸ Exploration budget</span>
+            </div>
+          </li>
+          <li class="phase-item">
+            <div class="phase-num">5</div>
+            <div class="phase-content">
+              <span class="phase-region">🌎 Amériques · 12 mois</span>
+              <span class="phase-detail">Mexique, Amérique du Sud prioritaires, USA ponctuel</span>
+              <span class="phase-tag tag-volunteer">▸ WWOOF Amérique Latine</span>
+            </div>
+          </li>
+          <li class="phase-item">
+            <div class="phase-num">6</div>
+            <div class="phase-content">
+              <span class="phase-region">🇨🇳🇰🇷🇯🇵 Asie de l'Est · 7 mois</span>
+              <span class="phase-detail">Circuit final, budget serré, WWOOF Japon</span>
+              <span class="phase-tag tag-volunteer">▸ WWOOF Japon</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="route-footer"><strong>Atout :</strong> Coût journalier le plus bas, logistique simplifiée, moins de vols. Idéale si Océanie non prioritaire.</div>
+    </div>
+
+  </div>
+
+  <!-- Traversée Norvège → Écosse -->
+  <div class="crossing-banner">
+    <div class="crossing-icon">⛵</div>
+    <div class="crossing-content">
+      <h3>Traversée Norvège → Écosse : options & réalisme</h3>
+      <p>
+        <strong>Fjordline Bergen → Newcastle</strong> (~20h, dès 50€/pers, voiture possible) — option principale, fiable, budget. 
+        <strong>Smyril Line Bergen → Lerwick (Shetland)</strong> — pittoresque, accès direct aux Highlands, 1×/semaine. 
+        <strong>Draken Harald Hårfagre</strong> (réplique langskip viking) — appel à volontaires d'équipage ponctuel, traversées transatlantiques et nordiques organisées. Peu prévisible, mais symboliquement parfait. Surveiller <em>vikingskip.com</em> à partir de 2026.
+      </p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════ TAB 2 : BUDGET ═══════════════ -->
+<div id="tab-budget" class="tab-panel">
+  <p class="section-eyebrow">Modélisation financière</p>
+  <h2 class="section-title">Budget sur 5 ans</h2>
+  <p class="section-intro">Base : 2 personnes. Trois scénarios : 5 ans (circuit complet rapide), 10 ans (pauses prolongées dans 2–3 pays), 15 ans (installation temporaire récurrente). Les coûts journaliers varient selon région et mode d'hébergement. Le volontariat réduit à ~5€/j/pers (nourriture uniquement).</p>
+
+  <!-- Scénarios 5 / 10 / 15 ans -->
+  <table style="margin-bottom:28px">
+    <thead>
+      <tr>
+        <th>Paramètre</th>
+        <th style="text-align:center">🗓 Scénario 5 ans</th>
+        <th style="text-align:center">🗓 Scénario 10 ans</th>
+        <th style="text-align:center">🗓 Scénario 15 ans</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Mode de voyage dominant</td>
+        <td style="text-align:center; color:var(--muted)">Itinérant rapide</td>
+        <td style="text-align:center; color:var(--muted)">Pauses 3–12 mois/pays</td>
+        <td style="text-align:center; color:var(--muted)">Semi-installation récurrente</td>
+      </tr>
+      <tr>
+        <td>Coût moyen/j/pers estimé</td>
+        <td style="text-align:center" class="neutral">~22 €</td>
+        <td style="text-align:center" class="neutral">~18 €</td>
+        <td style="text-align:center" class="neutral">~15 €</td>
+      </tr>
+      <tr>
+        <td>Dépenses totales 2 pers</td>
+        <td style="text-align:center" class="negative">~48 000 €</td>
+        <td style="text-align:center" class="negative">~78 000 €</td>
+        <td style="text-align:center" class="negative">~105 000 €</td>
+      </tr>
+      <tr>
+        <td>Revenus estimés en route</td>
+        <td style="text-align:center" class="positive">~22 000 €</td>
+        <td style="text-align:center" class="positive">~52 000 €</td>
+        <td style="text-align:center" class="positive">~82 000 €</td>
+      </tr>
+      <tr>
+        <td>Capital initial</td>
+        <td style="text-align:center" class="neutral">30 000 €</td>
+        <td style="text-align:center" class="neutral">30 000 €</td>
+        <td style="text-align:center" class="neutral">30 000 €</td>
+      </tr>
+      <tr class="total-row">
+        <td><strong>Solde projeté (fin période)</strong></td>
+        <td style="text-align:center" class="positive"><strong>+ 4 000 €</strong></td>
+        <td style="text-align:center" class="positive"><strong>+ 4 000 €</strong></td>
+        <td style="text-align:center" class="positive"><strong>+ 7 000 €</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="note-box" style="margin-bottom:28px">
+    <strong>Pourquoi le solde reste similaire sur 15 ans ?</strong> Plus la durée s'allonge, plus le coût journalier baisse (locations longue durée, routines locales, moins de transports). Les revenus progressent proportionnellement. Le modèle s'auto-équilibre <em>si</em> les phases de travail Norvège sont répétées tous les 2–3 ans (~1 saison = +10 000–15 000 € nets pour 2 personnes).
+  </div>
+
+  <div class="budget-overview">
+    <div class="budget-kpi">
+      <span class="kpi-label">Capital de départ</span>
+      <span class="kpi-val">30 000 €</span>
+      <span class="kpi-sub">Capital initial total</span>
+    </div>
+    <div class="budget-kpi">
+      <span class="kpi-label">Coût Norvège / saison</span>
+      <span class="kpi-val">~2 500 €</span>
+      <span class="kpi-sub">Dépenses sur place (2 pers, 6 mois)</span>
+    </div>
+    <div class="budget-kpi">
+      <span class="kpi-label">Gain Norvège / saison</span>
+      <span class="kpi-val">~15 000 €</span>
+      <span class="kpi-sub">Net 2 pers après dépenses locales</span>
+    </div>
+    <div class="budget-kpi">
+      <span class="kpi-label">Fonds urgence minimum</span>
+      <span class="kpi-val">3 000 €</span>
+      <span class="kpi-sub">Ne jamais descendre en dessous</span>
+    </div>
+  </div>
+
+  <!-- Coûts par région -->
+  <table>
+    <thead>
+      <tr>
+        <th>Région / Phase</th>
+        <th>Durée</th>
+        <th>Mode hébgt</th>
+        <th>€/j/pers (hors hébgt)</th>
+        <th class="num">Coût total 2 pers</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="table-section-header"><td colspan="6">EUROPE DU NORD</td></tr>
+      <tr>
+        <td class="highlight">Norvège</td>
+        <td>6 mois</td>
+        <td>WWOOF / wild camping</td>
+        <td>12 – 18 €</td>
+        <td class="num">~2 700 €</td>
+        <td>Courses Rema1000/Kiwi, stock Suède</td>
+      </tr>
+      <tr>
+        <td>Écosse · Irlande</td>
+        <td>3 mois</td>
+        <td>Workaway / tente</td>
+        <td>15 – 20 €</td>
+        <td class="num">~2 700 €</td>
+        <td>Ferry Bergen→Newcastle inclus</td>
+      </tr>
+      <tr class="table-section-header"><td colspan="6">EUROPE CENTRALE & BALKANS</td></tr>
+      <tr>
+        <td class="highlight">Balkans</td>
+        <td>4 mois</td>
+        <td>Van / Couchsurfing</td>
+        <td>8 – 12 €</td>
+        <td class="num">~2 000 €</td>
+        <td>Albanie, Macédoine, Serbie très bon marché</td>
+      </tr>
+      <tr>
+        <td>Europe de l'Est</td>
+        <td>3 mois</td>
+        <td>Couchsurfing / HelpX</td>
+        <td>10 – 15 €</td>
+        <td class="num">~1 800 €</td>
+        <td>Pologne, Roumanie, Ukraine</td>
+      </tr>
+      <tr>
+        <td>Turquie · Géorgie</td>
+        <td>3 mois</td>
+        <td>Couchsurfing / tente</td>
+        <td>8 – 12 €</td>
+        <td class="num">~1 500 €</td>
+        <td>Très abordable, accueil généreux</td>
+      </tr>
+      <tr class="table-section-header"><td colspan="6">ASIE</td></tr>
+      <tr>
+        <td class="highlight">Asie du Sud-Est</td>
+        <td>8 mois</td>
+        <td>Workaway / hostel ponctuel</td>
+        <td>10 – 18 €</td>
+        <td class="num">~4 200 €</td>
+        <td>Thaïlande/Vietnam/Cambodge très compétitifs</td>
+      </tr>
+      <tr>
+        <td>Chine</td>
+        <td>3 mois</td>
+        <td>Auberges / Couchsurfing</td>
+        <td>12 – 16 €</td>
+        <td class="num">~1 700 €</td>
+        <td>Trains peu chers, transports efficaces</td>
+      </tr>
+      <tr>
+        <td>Corée du Sud · Japon</td>
+        <td>4 mois</td>
+        <td>WWOOF Japon / hostel</td>
+        <td>20 – 30 €</td>
+        <td class="num">~4 000 €</td>
+        <td>Japon cher mais WWOOF compense</td>
+      </tr>
+      <tr class="table-section-header"><td colspan="6">AMÉRIQUES</td></tr>
+      <tr>
+        <td class="highlight">Canada</td>
+        <td>2 mois</td>
+        <td>WWOOF / Workaway</td>
+        <td>18 – 25 €</td>
+        <td class="num">~2 200 €</td>
+        <td>Coût de vie élevé, volontariat indispensable</td>
+      </tr>
+      <tr>
+        <td>USA (Yellowstone, Louisiane)</td>
+        <td>2 mois</td>
+        <td>Camping / Couchsurfing</td>
+        <td>25 – 35 €</td>
+        <td class="num">~3 000 €</td>
+        <td>Transport interne coûteux</td>
+      </tr>
+      <tr>
+        <td>Mexique · Amérique Centrale</td>
+        <td>3 mois</td>
+        <td>WWOOF / Couchsurfing</td>
+        <td>8 – 14 €</td>
+        <td class="num">~1 800 €</td>
+        <td>Très bon rapport qualité-coût</td>
+      </tr>
+      <tr>
+        <td>Amérique du Sud</td>
+        <td>6 mois</td>
+        <td>WWOOF / tente</td>
+        <td>10 – 16 €</td>
+        <td class="num">~3 600 €</td>
+        <td>Colombie, Équateur, Pérou, Argentine accessibles</td>
+      </tr>
+      <tr class="table-section-header"><td colspan="6">FRAIS FIXES (toute la durée)</td></tr>
+      <tr>
+        <td>Assurances voyage</td>
+        <td>5 ans</td>
+        <td>—</td>
+        <td>—</td>
+        <td class="num">~7 000 €</td>
+        <td>~700€/an/pers (ex. Chapka, ACS, Allianz nomade)</td>
+      </tr>
+      <tr>
+        <td>Vols intercontinentaux</td>
+        <td>~6 trajets</td>
+        <td>—</td>
+        <td>—</td>
+        <td class="num">~3 500 €</td>
+        <td>Europe→Asie, Asie→Amériques, etc.</td>
+      </tr>
+      <tr>
+        <td>Visas, admin, urgences</td>
+        <td>5 ans</td>
+        <td>—</td>
+        <td>—</td>
+        <td class="num">~2 000 €</td>
+        <td>Fonds de sécurité</td>
+      </tr>
+      <tr class="total-row">
+        <td colspan="4"><strong>TOTAL DÉPENSES ESTIMÉES (2 pers · 5 ans)</strong></td>
+        <td class="num highlight"><strong>~47 700 €</strong></td>
+        <td><em>Scénario moyen / frugal</em></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Revenus -->
+  <div class="divider"></div>
+  <p class="section-eyebrow">Revenus potentiels en route</p>
+  <h3 style="font-family:'Playfair Display',serif; font-size:1.2rem; margin-bottom:16px; color:var(--off-white)">Sources de financement complémentaires</h3>
+
+  <div class="income-grid">
+    <div class="income-card">
+      <h3>💰 Travail rémunéré estimé</h3>
+      <table>
+        <thead><tr><th>Source</th><th>Durée</th><th class="num">Gain net 2 pers</th></tr></thead>
+        <tbody>
+          <tr><td>Norvège : saison(s) hôtellerie/ferme</td><td>4 – 6 mois</td><td class="num positive">12 000 – 18 000 €</td></tr>
+          <tr><td>Enseignement anglais (Asie de l'Est)</td><td>3 – 6 mois</td><td class="num positive">4 000 – 8 000 €</td></tr>
+          <tr><td>Farm work Australie (F23 WHV)</td><td>3 mois</td><td class="num positive">4 000 – 6 000 €</td></tr>
+          <tr><td>Remote work / freelance ponctuel</td><td>variable</td><td class="num positive">2 000 – 5 000 €</td></tr>
+          <tr class="total-row"><td colspan="2"><strong>Total revenus estimés</strong></td><td class="num positive"><strong>22 000 – 37 000 €</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="income-card" style="border-color: rgba(168,197,218,0.15)">
+      <h3 style="color:var(--ice)">📊 Bilan par scénario</h3>
+      <table>
+        <thead><tr><th>Scénario</th><th class="num">Revenus</th><th class="num">Dépenses</th><th class="num">Solde</th></tr></thead>
+        <tbody>
+          <tr><td>5 ans</td><td class="num positive">+22 000</td><td class="num negative">−48 000</td><td class="num positive">+4 000 €</td></tr>
+          <tr><td>10 ans</td><td class="num positive">+52 000</td><td class="num negative">−78 000</td><td class="num positive">+4 000 €</td></tr>
+          <tr><td>15 ans</td><td class="num positive">+82 000</td><td class="num negative">−105 000</td><td class="num positive">+7 000 €</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:0.74rem; color:var(--muted); margin-top:12px; line-height:1.5">Capital initial (30 000 €) inclus dans tous les scénarios. Le modèle tient si la Norvège est revisitée ~1 saison / 3 ans.</p>
+    </div>
+  </div>
+
+  <div class="note-box">
+    <strong>⚠️ Points de vigilance budgétaires :</strong> L'assurance voyage longue durée est le poste fixe le plus critique — comparer Chapka Nomade, ACS Globe, SafetyWing. Les États-Unis sont le poste le plus coûteux à la journée : limiter à 6–8 semaines. Prévoir un fonds d'urgence de <strong>3 000 €</strong> non touché. L'Océanie sans WHV pour H37 = coût prohibitif, à arbitrer.
+  </div>
+</div>
+
+
+<!-- ═══════════════ TAB 3 : VISAS & ADMIN ═══════════════ -->
+<div id="tab-visas" class="tab-panel">
+  <p class="section-eyebrow">Citoyens français</p>
+  <h2 class="section-title">Visas & Démarches administratives</h2>
+  <p class="section-intro">Passeport français = accès sans visa à 186 pays. Points critiques : Working Holiday Visa (âge limite 30 ans pour la plupart des pays), couverture santé hors Europe, domiciliation fiscale.</p>
+
+  <div class="visa-grid">
+    <div class="visa-card">
+      <h3>🌍 Europe & Espace Schengen</h3>
+      <div class="visa-item"><span class="visa-country">Norvège (EEA)</span><span class="visa-status v-free">Libre circulation</span></div>
+      <div class="visa-item"><span class="visa-country">Écosse · Irlande (UK)</span><span class="visa-status v-free">Passeport suffit (≤6 mois)</span></div>
+      <div class="visa-item"><span class="visa-country">Balkans occidentaux</span><span class="visa-status v-free">Sans visa (≤90j)</span></div>
+      <div class="visa-item"><span class="visa-country">Kosovo, Serbie, Albanie</span><span class="visa-status v-free">Sans visa</span></div>
+      <div class="visa-item"><span class="visa-country">Turquie</span><span class="visa-status v-evisa">eVisa (~20$)</span></div>
+      <div class="visa-item"><span class="visa-country">Géorgie</span><span class="visa-status v-free">Sans visa (≤365j !)</span></div>
+    </div>
+    <div class="visa-card">
+      <h3>🌏 Asie</h3>
+      <div class="visa-item"><span class="visa-country">Thaïlande</span><span class="visa-status v-free">Sans visa (30j, ext. possible)</span></div>
+      <div class="visa-item"><span class="visa-country">Vietnam</span><span class="visa-status v-evisa">eVisa 90j (~25$)</span></div>
+      <div class="visa-item"><span class="visa-country">Cambodge</span><span class="visa-status v-voa">VOA (~30$)</span></div>
+      <div class="visa-item"><span class="visa-country">Indonésie</span><span class="visa-status v-voa">VOA (gratuit FR)</span></div>
+      <div class="visa-item"><span class="visa-country">Chine</span><span class="visa-status v-required">Visa ambassade requis</span></div>
+      <div class="visa-item"><span class="visa-country">Japon</span><span class="visa-status v-free">Sans visa (90j) · WHV F23</span></div>
+      <div class="visa-item"><span class="visa-country">Corée du Sud</span><span class="visa-status v-free">Sans visa (90j)</span></div>
+    </div>
+    <div class="visa-card">
+      <h3>🌎 Amériques & Océanie</h3>
+      <div class="visa-item"><span class="visa-country">Canada</span><span class="visa-status v-evisa">eTA (~7$) · WHV F23 ≤35ans</span></div>
+      <div class="visa-item"><span class="visa-country">USA</span><span class="visa-status v-evisa">ESTA (~21$)</span></div>
+      <div class="visa-item"><span class="visa-country">Mexique</span><span class="visa-status v-free">Sans visa (180j)</span></div>
+      <div class="visa-item"><span class="visa-country">Brésil, Argentine, Chili</span><span class="visa-status v-free">Sans visa</span></div>
+      <div class="visa-item"><span class="visa-country">Australie</span><span class="visa-status v-required">WHV F23 · Visa touriste H37</span></div>
+      <div class="visa-item"><span class="visa-country">Nouvelle-Zélande</span><span class="visa-status v-evisa">NZeTA · WHV F23 ≤35ans</span></div>
+    </div>
+    <div class="visa-card">
+      <h3>⚠️ Points critiques WHV pour F23</h3>
+      <div class="visa-item"><span class="visa-country">Australie WHV</span><span class="visa-status v-free">Valable jusqu'à 35 ans ✓</span></div>
+      <div class="visa-item"><span class="visa-country">Nouvelle-Zélande WHV</span><span class="visa-status v-free">Valable jusqu'à 35 ans ✓</span></div>
+      <div class="visa-item"><span class="visa-country">Japon WHV</span><span class="visa-status v-free">Valable jusqu'à 30 ans ✓</span></div>
+      <div class="visa-item"><span class="visa-country">Canada WHV</span><span class="visa-status v-free">Valable jusqu'à 35 ans ✓</span></div>
+      <div class="visa-item" style="padding-top:10px"><span class="visa-country" style="color:var(--red); font-size:0.75rem">H37 — tous les WHV sont hors limite d'âge.</span><span class="visa-status v-required">Non éligible</span></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <p class="section-eyebrow">Checklist administrative avant départ</p>
+  <ul class="checklist">
+    <li><strong>Passeports</strong> : validité ≥ 18 mois après la date de départ prévue. Renouveler si nécessaire.</li>
+    <li><strong>Assurance voyage long séjour</strong> : couvre soins médicaux, rapatriement, responsabilité civile. Chapka, ACS ou SafetyWing (nomades). Souscrire avant départ.</li>
+    <li><strong>Carte Vitale / CPAM</strong> : demander le maintien des droits à l'assurance maladie française si cotisations récentes. Formulaire S1 si travail en EEA.</li>
+    <li><strong>Domiciliation fiscale</strong> : rester résident fiscal français simplifie les déclarations. Conserver une adresse en France (famille, ami). Déclarer revenus norvégiens/étrangers.</li>
+    <li><strong>Compte bancaire nomade</strong> : ouvrir Revolut ou N26 pour les retraits sans frais. Garder un compte français standard en parallèle.</li>
+    <li><strong>Carnet de vaccination</strong> : Hépatites A/B, Tétanos, Typhoïde, Fièvre jaune (Amazonie), Rage (selon parcours), Encéphalite japonaise (Asie du Sud-Est).</li>
+    <li><strong>Numéro de sécurité sociale</strong> : photocopie + version numérique. Carte CEAM valable dans l'EEA.</li>
+    <li><strong>Procuration notariée</strong> : donner procuration à un proche pour gérer documents officiels depuis la France pendant l'absence.</li>
+    <li><strong>France Travail ARE/ARCE</strong> : si droits au chômage ouverts avant départ, étudier l'ARCE (capital) pour financer le projet ou ARE différée au retour.</li>
+  </ul>
+</div>
+
+
+<!-- ═══════════════ TAB 4 : TRAVAIL EN ROUTE ═══════════════ -->
+<div id="tab-travail" class="tab-panel">
+  <p class="section-eyebrow">Autonomie financière</p>
+  <h2 class="section-title">Travailler en voyage</h2>
+  <p class="section-intro">Deux leviers principaux : le volontariat (hébergement + nourriture couverts = économie directe) et le travail rémunéré (reconstituer les réserves). La discipline entre placements est le facteur clé du budget.</p>
+
+  <div class="work-highlight">
+    <strong>La Norvège est le moteur financier du voyage.</strong> Légalité totale pour deux citoyens français (EEA), salaire minimum ~180 NOK/h (~16€), secteurs accessibles sans diplôme : hôtellerie, fermes, pêche, nettoyage, construction saisonnière. 4 mois plein temps = ~10 000–13 000 € nets à deux, avec logement WWOOF souvent inclus.
+  </div>
+
+  <p class="section-eyebrow">Plateformes de volontariat</p>
+
+  <div class="platform-grid">
+    <div class="platform-card">
+      <h4>WWOOF</h4>
+      <div class="plat-type">Agriculture biologique</div>
+      <p>Travail agricole 4–6h/j contre logement + repas. Memberships par pays (~30€/an). Disponible en Norvège, Japon, Amérique du Sud, Australie. Idéal zones rurales.</p>
+    </div>
+    <div class="platform-card">
+      <h4>Workaway</h4>
+      <div class="plat-type">Échanges polyvalents</div>
+      <p>Abonnement unique ~49€/an pour 2. Missions variées : jardinage, rénovation, baby-sitting, cours d'anglais. 25 000+ hôtes mondiaux. Le plus polyvalent.</p>
+    </div>
+    <div class="platform-card">
+      <h4>HelpX</h4>
+      <div class="plat-type">Travail manuel</div>
+      <p>Similaire Workaway, ~20€ inscription unique. Moins d'hôtes mais fort en Océanie, Europe rurale, Amérique du Sud. Bonne alternative ou complément.</p>
+    </div>
+    <div class="platform-card">
+      <h4>Couchsurfing</h4>
+      <div class="plat-type">Hébergement gratuit</div>
+      <p>Hébergement chez l'habitant, pas de travail en échange. Membership ~15€/an. Urbain principalement. Excellent pour les villes de transit.</p>
+    </div>
+    <div class="platform-card">
+      <h4>Trusted Housesitters</h4>
+      <div class="plat-type">House / pet sitting</div>
+      <p>Garder maison et animaux en échange du logement. ~120€/an pour 2. Très prisé en UK, Australie, USA. Séjours souvent de 1–4 semaines.</p>
+    </div>
+    <div class="platform-card">
+      <h4>Enseignement anglais</h4>
+      <div class="plat-type">Travail rémunéré</div>
+      <p>Japon, Corée, Chine : 800–1500€/mois possible sans diplôme d'enseignement. TEFL/CELTA (~300€) fortement recommandé, obtenir avant départ. Plateforme : GoOverseas, Dave's ESL Cafe.</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <p class="section-eyebrow">Pays par niveau de salaire</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Pays</th>
+        <th>Secteur accessible</th>
+        <th>Salaire estimé/mois (net)</th>
+        <th>Statut légal</th>
+        <th class="num">Économies potentielles 3 mois</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="highlight">Norvège</td><td>Hôtellerie, fermes, pêche</td><td>2 200 – 2 800 €</td><td class="positive">EEA — plein droit</td><td class="num positive">4 000 – 7 000 €/pers</td></tr>
+      <tr><td>Australie</td><td>Farm work, hospitality</td><td>1 800 – 2 500 AUD</td><td class="neutral">WHV F23 uniquement</td><td class="num positive">2 500 – 4 000 €/pers</td></tr>
+      <tr><td>Nouvelle-Zélande</td><td>Agriculture, tourisme</td><td>1 600 – 2 200 NZD</td><td class="neutral">WHV F23 ≤35 ans</td><td class="num positive">2 000 – 3 500 €/pers</td></tr>
+      <tr><td>Japon</td><td>Enseignement, restauration</td><td>150 000 – 250 000 ¥</td><td class="neutral">WHV F23 ≤30 ans</td><td class="num positive">1 500 – 3 000 €/pers</td></tr>
+      <tr><td>Canada</td><td>Hospitality, agriculture</td><td>1 800 – 2 400 CAD</td><td class="neutral">WHV F23 ≤35 ans</td><td class="num positive">2 000 – 3 500 €/pers</td></tr>
+      <tr><td>Corée du Sud</td><td>Enseignement anglais (EPIK)</td><td>2 000 – 2 500 €</td><td class="neutral">Visa E-2 requis (TEFL)</td><td class="num positive">3 000 – 5 000 €/pers</td></tr>
+      <tr><td>Thaïlande / SEA</td><td>Cours anglais privés</td><td>600 – 1 200 €</td><td class="neutral">Permis travail variable</td><td class="num neutral">500 – 1 500 €/pers</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note-box">
+    <strong>💡 Stratégie recommandée :</strong> TEFL/CELTA obtenu avant départ (sept 2027) → Norvège 6 mois (revenus maxima) → Workaway en Écosse/Balkans → Asie du Sud-Est (cours anglais informels) → WHV Australie pour F23 si L'Australe retenu → Japon WHV F23 avant 30 ans (2030). H37 se concentre sur Norvège + enseignement anglais Asie de l'Est + remote work.
+  </div>
+</div>
+
+<!-- ═══════════════ TAB 5 : POINTS CLÉS ═══════════════ -->
+<div id="tab-essentiels" class="tab-panel">
+  <p class="section-eyebrow">Informations critiques souvent négligées</p>
+  <h2 class="section-title">Points clés pour 5 – 15 ans</h2>
+  <p class="section-intro">Ce qui sépare un voyage réussi d'un voyage interrompu : la gestion du couple en mobilité permanente, la santé sur le long terme, le lien avec la France, et l'anticipation du retour éventuel.</p>
+
+  <!-- DURÉE VARIABLE -->
+  <p class="section-eyebrow">Durée variable : changer de rythme sans casser le modèle</p>
+  <table style="margin-bottom:28px">
+    <thead><tr><th>Situation</th><th>Action recommandée</th><th>Impact budget</th></tr></thead>
+    <tbody>
+      <tr><td class="highlight">Coup de cœur pour un pays</td><td>Passer en mode "résident temporaire" : location mensuelle, Workaway local, routine</td><td class="positive">Coût/j divisé par 2 vs voyage rapide</td></tr>
+      <tr><td class="highlight">Épuisement du voyage</td><td>Retour provisoire en Norvège pour travailler, recharger les batteries et les finances</td><td class="neutral">Neutre à positif</td></tr>
+      <tr><td class="highlight">Désaccord sur la destination</td><td>Prévoir dès maintenant un protocole de décision à deux (vote, alternance de priorité)</td><td class="neutral">Aucun</td></tr>
+      <tr><td class="highlight">Opportunité de travail impromptue</td><td>Avoir toujours un CV numérique multilingue (FR/EN) à jour, profil LinkedIn actif</td><td class="positive">Revenu inattendu possible</td></tr>
+      <tr><td class="highlight">Envie de s'installer définitivement</td><td>Évaluer visa de résidence, coût de vie local, accès santé — avant de couper le fil français</td><td class="negative">Perte couverture sociale FR possible</td></tr>
+    </tbody>
+  </table>
+
+  <!-- SANTÉ -->
+  <p class="section-eyebrow">Santé sur le long terme</p>
+  <div class="visa-grid" style="margin-bottom:28px">
+    <div class="visa-card">
+      <h3>🏥 Assurances & couverture</h3>
+      <div class="visa-item"><span class="visa-country">Chapka Nomade / ACS Globe</span><span class="visa-status v-free">Recommandé ≤1 an</span></div>
+      <div class="visa-item"><span class="visa-country">SafetyWing Nomad Insurance</span><span class="visa-status v-free">~42$/mois/pers · long séjour</span></div>
+      <div class="visa-item"><span class="visa-country">Cigna Global / Allianz Care</span><span class="visa-status v-evisa">Expat long terme (>2 ans)</span></div>
+      <div class="visa-item"><span class="visa-country">CPAM française</span><span class="visa-status v-evisa">Maintien possible si cotisations récentes</span></div>
+      <div class="visa-item"><span class="visa-country">Carte CEAM</span><span class="visa-status v-free">Valable EEA uniquement</span></div>
+      <div class="visa-item"><span class="visa-country">Franchise médicale</span><span class="visa-status v-required">Toujours garder 1 500 € dédiés santé</span></div>
+    </div>
+    <div class="visa-card">
+      <h3>💊 Logistique médicale</h3>
+      <ul class="checklist" style="margin-top:0">
+        <li><strong>Ordonnances internationales</strong> : demander ordonnances en DCI (nom générique) avant départ — reconnues mondialement.</li>
+        <li><strong>Téléconsultation</strong> : Livi, Qare, Médecin Direct — maintien suivi médical français à distance.</li>
+        <li><strong>Trousse de secours avancée</strong> : antibiotiques spectre large, antipaludéens si Afrique/SEA, EpiPen si allergie connue.</li>
+        <li><strong>Dossier médical numérique</strong> : groupes sanguins, allergies, antécédents en FR/EN sur Google Drive sécurisé.</li>
+        <li><strong>Santé dentaire</strong> : bilan complet avant départ. Les soins dentaires d'urgence à l'étranger sont coûteux sauf en Asie du Sud-Est et Balkans.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- VIE DE COUPLE -->
+  <p class="section-eyebrow">Vie de couple en mobilité permanente</p>
+  <table style="margin-bottom:28px">
+    <thead><tr><th>Défi identifié</th><th>Stratégie proactive</th></tr></thead>
+    <tbody>
+      <tr><td>Perte d'espace personnel</td><td>Définir des "jours solo" réguliers où chacun voyage ou explore seul (1j/semaine minimum)</td></tr>
+      <tr><td>Décisions constantes (où aller, où dormir)</td><td>Alterner le rôle de "décideur principal" par semaine. Réduire la fatigue décisionnelle.</td></tr>
+      <tr><td>Rythmes différents (F23 vs H37)</td><td>Anticiper les écarts d'énergie physique, de besoin social, d'ambition. En parler avant, pas pendant.</td></tr>
+      <tr><td>Stress financier partagé</td><td>Compte commun dédié voyage + comptes individuels (autonomie). Revue mensuelle du budget ensemble.</td></tr>
+      <tr><td>Réseau social qui s'érode</td><td>Investir dans les communautés locales (Workaway, clubs sportifs, coworkings) — ne pas voyager en bulle.</td></tr>
+      <tr><td>Divergence sur la durée du voyage</td><td>Révision contractuelle tous les 12 mois : continuer / pause / retour — décision consensuelle.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- LIEN FRANCE -->
+  <p class="section-eyebrow">Maintenir le lien avec la France</p>
+  <div class="visa-grid" style="margin-bottom:28px">
+    <div class="visa-card">
+      <h3>🏛 Administratif & fiscal</h3>
+      <ul class="checklist" style="margin-top:0">
+        <li><strong>Résidence fiscale française</strong> : à maintenir tant que vous n'avez pas de résidence étrangère officielle. Déclarer les revenus mondiaux.</li>
+        <li><strong>Adresse officielle</strong> : famille ou domiciliation postale (~15€/mois). Nécessaire pour CPAM, banque, impôts.</li>
+        <li><strong>ARE France Travail</strong> : si droits ouverts, possibilité de percevoir l'ARE depuis l'étranger 3 mois (prolongeable dans l'UE). ARCE = capital immédiat (60% des droits).</li>
+        <li><strong>Retraite</strong> : cotisations suspendues pendant voyage. Possibilité de rachat de trimestres au retour. Pas urgent mais à documenter.</li>
+      </ul>
+    </div>
+    <div class="visa-card">
+      <h3>📡 Connectivité & vie pratique</h3>
+      <ul class="checklist" style="margin-top:0">
+        <li><strong>SIM internationale</strong> : Airalo (eSIM par pays, sans frais de roaming), Revolut eSIM, ou Ubigi.</li>
+        <li><strong>Banque nomade</strong> : Revolut (taux de change interbancaire) + Wise pour virements internationaux. Garder LCL/BNP FR en secours.</li>
+        <li><strong>Stockage documents</strong> : passeports, visas, assurances, carnets de vaccins — copies cloud (Google Drive chiffré) + clé USB waterproof.</li>
+        <li><strong>Accès famille</strong> : numéro WhatsApp permanent, check-in hebdomadaire minimal. Désigner un référent en France pour les urgences.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- RETOUR ÉVENTUEL -->
+  <p class="section-eyebrow">Anticiper le retour (même si hypothétique)</p>
+  <table style="margin-bottom:28px">
+    <thead><tr><th>Domaine</th><th>Risque si non anticipé</th><th>Action à prendre en route</th></tr></thead>
+    <tbody>
+      <tr><td class="highlight">Emploi</td><td>Trou dans le CV difficile à expliquer</td><td>Documenter le voyage comme projet : blog, LinkedIn, compétences acquises (langues, gestion, enseignement)</td></tr>
+      <tr><td class="highlight">Logement</td><td>Aucun historique locatif récent</td><td>Garder des références de Workaway/WWOOF (lettres de recommandation numériques)</td></tr>
+      <tr><td class="highlight">Retraite H37</td><td>Trimestres manquants significatifs à 52 ans si retour après 15 ans</td><td>Cotisation volontaire CFE (~900€/an) ou rachats de trimestres au retour</td></tr>
+      <tr><td class="highlight">Santé mentale</td><td>Syndrome post-voyage ("reverse culture shock") fréquent après longue absence</td><td>Maintenir des connexions en France. Prévoir période de transition au retour.</td></tr>
+      <tr><td class="highlight">Fiscal</td><td>Double imposition possible si revenus étrangers mal déclarés</td><td>Consulter un expert-comptable spécialisé "expatriés" avant départ.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ÉQUIPEMENT CRITIQUE -->
+  <p class="section-eyebrow">Équipement & matériel — long terme</p>
+  <table style="margin-bottom:10px">
+    <thead><tr><th>Catégorie</th><th>Recommandations spécifiques voyage long</th><th>Budget initial</th></tr></thead>
+    <tbody>
+      <tr><td class="highlight">Sacs à dos</td><td>Osprey Atmos/Aura 65L (ergonomie long terme) + daypack 20L. Éviter valises.</td><td>~250–350 €/pers</td></tr>
+      <tr><td>Tente</td><td>MSR Hubba Hubba (2 pers, 1,7 kg, 4 saisons) ou Hilleberg Akto (Norvège/grand froid)</td><td>~350–600 €</td></tr>
+      <tr><td>Sacs de couchage</td><td>Duvet synthétique -10°C pour Norvège/altitude. Liner soie pour pays chauds.</td><td>~150–250 €/pers</td></tr>
+      <tr><td>Électronique</td><td>1 laptop léger (Lenovo ThinkPad), 2 téléphones (dont 1 en secours), batterie solaire 20 000 mAh</td><td>~800–1 200 €</td></tr>
+      <tr><td>Santé & hygiène</td><td>Filtre à eau LifeStraw/Sawyer (évite achats bouteilles), pharmacie complète</td><td>~100–150 €</td></tr>
+      <tr><td>Vêtements</td><td>Système "layering" : base mérinos + mid-layer + imperméable Gore-Tex. Minimaliste.</td><td>~300–500 €/pers</td></tr>
+    </tbody>
+  </table>
+  <div class="note-box">
+    <strong>Règle des 5 ans :</strong> Investir dans du matériel de qualité dès le départ. Un équipement bas de gamme remplacé 3 fois coûte plus cher qu'un équipement premium remplacé une fois en 15 ans.
+  </div>
+</div>
+
+</main>
+
+<script>
+function showTab(tabId) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tabId).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+
+</body>
+</html>
