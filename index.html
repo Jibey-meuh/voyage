@@ -1,55 +1,747 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Hub d'IA</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            color: #333;
-        }
-        h1 { margin-bottom: 2rem; color: #2c3e50; }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
-        .card {
-            background: white;
-            padding: 20px 40px;
-            border-radius: 12px;
-            text-decoration: none;
-            color: #3498db;
-            font-weight: bold;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.2s, background 0.2s;
-            text-align: center;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            background: #3498db;
-            color: white;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tour du monde 10‑15 ans · Artistes · Minimalistes</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #f5f2e6;
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+      padding: 1.5rem;
+      color: #2e241f;
+    }
+
+    .container {
+      max-width: 1350px;
+      margin: 0 auto;
+      background: rgba(255, 250, 245, 0.94);
+      border-radius: 2.5rem;
+      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      border: 1px solid #d9c8b2;
+    }
+
+    h1 {
+      font-weight: 500;
+      font-size: 2rem;
+      border-bottom: 2px dashed #c7af8c;
+      padding-bottom: 0.7rem;
+      margin-bottom: 1.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    h1 span {
+      background: #b48c5c;
+      color: #fff;
+      font-size: 0.9rem;
+      padding: 0.2rem 1.2rem;
+      border-radius: 40px;
+    }
+
+    .subhead {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem 2rem;
+      margin: -0.5rem 0 1.5rem 0;
+      font-size: 0.9rem;
+      color: #5a4a3a;
+    }
+
+    .subhead strong {
+      color: #3f2e1f;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      margin-bottom: 2rem;
+      border-bottom: 2px solid #e5d5bc;
+      padding-bottom: 0.2rem;
+    }
+
+    .tab-btn {
+      background: #ede3d3;
+      border: none;
+      padding: 0.7rem 1.3rem;
+      font-weight: 600;
+      border-radius: 30px 30px 0 0;
+      color: #5e4b3a;
+      cursor: pointer;
+      transition: 0.2s;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    .tab-btn.active {
+      background: #b48c5c;
+      color: white;
+      box-shadow: 0 -4px 10px rgba(180, 140, 92, 0.3);
+    }
+
+    .tab-content {
+      display: none;
+      animation: fade 0.35s;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fade {
+      from {
+        opacity: 0.3;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+    }
+
+    .card {
+      background: #fffdf7;
+      border-radius: 1.8rem;
+      padding: 1.5rem;
+      border: 1px solid #dccdb4;
+    }
+
+    .card h3 {
+      color: #7a5d3e;
+      margin-bottom: 1rem;
+    }
+
+    .timeline {
+      list-style: none;
+      font-size: 0.9rem;
+    }
+
+    .timeline li {
+      padding-left: 1.2rem;
+      border-left: 3px solid #c8aa7a;
+      margin-bottom: 0.7rem;
+    }
+
+    .badge {
+      background: #e7d7bd;
+      font-size: 0.7rem;
+      padding: 0.2rem 0.7rem;
+      border-radius: 20px;
+      margin-left: 0.3rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 1rem;
+      overflow: hidden;
+      margin: 1rem 0;
+    }
+
+    th {
+      background: #b48c5c;
+      color: white;
+      padding: 0.7rem;
+      text-align: left;
+    }
+
+    td,
+    th {
+      padding: 0.7rem 1rem;
+      border-bottom: 1px solid #e2d1b8;
+    }
+
+    .highlight {
+      font-weight: 700;
+      color: #7b4b2c;
+    }
+
+    .daily-box {
+      background: #f9f3e7;
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .big-number {
+      font-size: 2.8rem;
+      font-weight: 700;
+      color: #5b3c22;
+    }
+
+    .idea-card {
+      background: #fdf8f0;
+      border-left: 6px solid #b48c5c;
+      border-radius: 1.5rem;
+      padding: 1.8rem;
+      margin-top: 1rem;
+    }
+
+    .income-badge {
+      background: #5b8c5a;
+      color: white;
+      padding: 0.2rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      display: inline-block;
+      margin: 0.3rem 0;
+    }
+
+    hr {
+      border: 0.5px solid #dccdb4;
+      margin: 1.2rem 0;
+    }
+
+    .footer-note {
+      margin-top: 2rem;
+      font-size: 0.8rem;
+      text-align: center;
+      color: #6b5a48;
+    }
+
+    ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    ul.checklist li::before {
+      content: "✔️ ";
+      color: #b48c5c;
+      font-weight: bold;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin: 1rem 0;
+    }
+
+    @media (max-width: 720px) {
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+      .container {
+        padding: 1rem;
+      }
+      h1 {
+        font-size: 1.5rem;
+      }
+    }
+
+    .tag {
+      display: inline-block;
+      background: #e7d7bd;
+      font-size: 0.7rem;
+      padding: 0.15rem 0.7rem;
+      border-radius: 20px;
+      margin-left: 0.4rem;
+    }
+
+    .visa-status {
+      font-size: 0.75rem;
+      padding: 0.1rem 0.6rem;
+      border-radius: 12px;
+      background: #e0eedd;
+      color: #2a5e2a;
+    }
+
+    .visa-status.warn {
+      background: #f5e8c7;
+      color: #8a6d1b;
+    }
+
+    .visa-status.danger {
+      background: #f5d7d7;
+      color: #a13d3d;
+    }
+
+    .alert-box {
+      background: #fef3c7;
+      border-left: 4px solid #f59e0b;
+      padding: 0.8rem 1.2rem;
+      border-radius: 0 12px 12px 0;
+      margin: 1rem 0;
+    }
+  </style>
 </head>
 <body>
-
-    <h1>Choisissez votre Assistant</h1>
-
-    <div class="grid">
-        <a href="Gemini.html" class="card">Gemini</a>
-        <a href="Claude.html" class="card">Claude</a>
-        <a href="Deepseek.html" class="card">Deepseek</a>
-        <a href="ChatGPT.html" class="card">ChatGPT</a>
+  <div class="container">
+    <h1>
+      🎭 Tour du monde 10‑15 ans · Artistes de rue
+      <span>45 000€ · 6€/jour nourriture</span>
+    </h1>
+    <div class="subhead">
+      <span><strong>Départ :</strong> Bordeaux · Septembre 2027</span>
+      <span><strong>Voyageurs :</strong> F23 &amp; H37</span>
+      <span><strong>Durée :</strong> 10‑15 ans (flexible)</span>
+      <span><strong>Mode :</strong> WWOOF · Workaway · Couchsurfing · Tente</span>
     </div>
 
+    <div class="tabs">
+      <button class="tab-btn active" id="tab1Btn">🗺️ Itinéraires</button>
+      <button class="tab-btn" id="tab2Btn">💰 Budget 10‑15 ans</button>
+      <button class="tab-btn" id="tab3Btn">💶 Dépenses quotidiennes</button>
+      <button class="tab-btn" id="tab4Btn">🎭 Gagner sa route</button>
+      <button class="tab-btn" id="tab5Btn">🏕️ Hébergement & nourriture</button>
+      <button class="tab-btn" id="tab6Btn">🛡️ Logistique & santé</button>
+      <button class="tab-btn" id="tab7Btn">🛂 Visas & admin</button>
+      <button class="tab-btn" id="tab8Btn">❤️ Vie de couple & points clés</button>
+      <button class="tab-btn" id="tab9Btn">🎒 Matériel & préparation physique</button>
+    </div>
+
+    <!-- ============ TAB 1 : ITINÉRAIRES ============ -->
+    <div class="tab-content active" id="tab1">
+      <p style="background:#f0e7d8; padding:0.7rem 1.2rem; border-radius:30px; margin-bottom:1.5rem;">
+        ⏱️ 4 grands modèles d'itinéraire sur 10‑15 ans. Chaque bloc peut être rallongé ou court-circuité selon les opportunités.
+      </p>
+      <div class="grid-4">
+        <div class="card">
+          <h3>🌲 Grands espaces</h3>
+          <ul class="timeline">
+            <li>🇳🇴 Norvège (8 mois)</li>
+            <li>🏴󠁧󠁢󠁳󠁣󠁴󠁿 Écosse, Irlande (5 mois)</li>
+            <li>🇪🇺 Balkans / Europe Est (24 mois)</li>
+            <li>🇹🇷 Turquie, Géorgie (8 mois)</li>
+            <li>🌏 Asie du Sud‑Est (18 mois)</li>
+            <li>🇯🇵🇰🇷🇨🇳 Asie Est (10 mois)</li>
+            <li>🇨🇦 Canada, USA (12 mois)</li>
+            <li>🇲🇽 Mexique, AmSud (18 mois)</li>
+            <li>🌺 Océanie (10 mois)</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>🌞 Étés permanents</h3>
+          <ul class="timeline">
+            <li>🇳🇴 Norvège (avril‑oct) (7 mois)</li>
+            <li>🏴󠁧󠁢󠁳󠁣󠁴󠁿 Écosse, Irlande (4 mois)</li>
+            <li>🇧🇦 Balkans, Europe Est (28 mois)</li>
+            <li>🇹🇷🇬🇪 Turquie, Géorgie (8 mois)</li>
+            <li>🌏 Asie Sud‑Est (16 mois)</li>
+            <li>🇯🇵🇰🇷 Japon, Corée (10 mois)</li>
+            <li>🇲🇽🇧🇷 Amérique Latine (22 mois)</li>
+            <li>🇨🇦 Canada, USA (10 mois)</li>
+            <li>🇦🇺 Océanie (8 mois)</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>⚓ Viking & Pacifique</h3>
+          <ul class="timeline">
+            <li>🇳🇴 Norvège (hiver) (6 mois)</li>
+            <li>⛵ Écosse, Irlande (4 mois)</li>
+            <li>🇪🇺 Europe Ouest/Est (20 mois)</li>
+            <li>🇹🇷🇬🇪 Turquie, Géorgie (6 mois)</li>
+            <li>🌏 Asie Sud‑Est (14 mois)</li>
+            <li>🇯🇵🇰🇷🇨🇳 Asie Est (10 mois)</li>
+            <li>🇦🇺 Océanie (travail) (12 mois)</li>
+            <li>🇨🇦 Canada (10 mois)</li>
+            <li>🇲🇽 AmSud (16 mois)</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>🧘 Spiritualité & nature</h3>
+          <ul class="timeline">
+            <li>🇳🇴 Norvège (7 mois)</li>
+            <li>🏴󠁧󠁢󠁳󠁣󠁴󠁿 Écosse, Irlande (5 mois)</li>
+            <li>🇧🇦 Balkans, Europe Est (26 mois)</li>
+            <li>🇹🇷🇬🇪 Turquie, Géorgie (8 mois)</li>
+            <li>🇮🇳🇳🇵 Sous‑continent indien (12 mois)</li>
+            <li>🌏 Asie Sud‑Est (14 mois)</li>
+            <li>🇯🇵 Japon, Corée (10 mois)</li>
+            <li>🇲🇽 Amérique Latine (20 mois)</li>
+            <li>🌺 Océanie (8 mois)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="alert-box">
+        <strong>⛵ Traversée Norvège → Écosse :</strong> Ferry Bergen–Newcastle (Fjordline, ~50€/pers) ou Smyril Line via Shetland. Pas de drakkar commercial.
+      </div>
+    </div>
+
+    <!-- ============ TAB 2 : BUDGET ============ -->
+    <div class="tab-content" id="tab2">
+      <h2 style="color:#5e4530; margin-bottom:1rem;">💰 Budget 10‑15 ans · 45 000€ de départ</h2>
+      <p>Hypothèses : <strong>zéro hébergement payant</strong> (tente, WWOOF, Workaway, Couchsurfing), nourriture ultra‑économique (6€/jour pour deux), déplacements lents, revenus via spectacles et cours.</p>
+
+      <table style="margin:1.5rem 0;">
+        <tr><th>Poste</th><th>Coût mensuel couple</th><th>10 ans (120 mois)</th><th>15 ans (180 mois)</th></tr>
+        <tr><td>🚑 Assurances (Chapka / SafetyWing)</td><td>110 €</td><td class="highlight">13 200 €</td><td class="highlight">19 800 €</td></tr>
+        <tr><td>🍲 Nourriture (6€/jour)</td><td>180 €</td><td class="highlight">21 600 €</td><td class="highlight">32 400 €</td></tr>
+        <tr><td>🚌 Transports (bus, stop, vols low‑cost)</td><td>70 €</td><td class="highlight">8 400 €</td><td class="highlight">12 600 €</td></tr>
+        <tr><td>🛂 Visas, formalités</td><td>15 €</td><td class="highlight">1 800 €</td><td class="highlight">2 700 €</td></tr>
+        <tr><td>📱 Téléphonie (eSIM + forfait FR)</td><td>10 €</td><td class="highlight">1 200 €</td><td class="highlight">1 800 €</td></tr>
+        <tr><td>🎭 Matériel spectacle</td><td>15 €</td><td class="highlight">1 800 €</td><td class="highlight">2 700 €</td></tr>
+        <tr style="background:#f7efe2;"><td><strong>Total dépenses</strong></td><td></td><td><strong>48 000 €</strong></td><td><strong>72 000 €</strong></td></tr>
+      </table>
+
+      <div class="daily-box">
+        <div>
+          <span class="big-number">45 000 €</span>
+          <p>budget initial</p>
+        </div>
+        <div>
+          <p>📉 Manque théorique (10 ans) : <strong>3 000 €</strong></p>
+          <p>📉 Manque théorique (15 ans) : <strong>27 000 €</strong></p>
+          <p>🎭 Revenus artistiques estimés : <strong>5 000 – 15 000 €/an</strong> (spectacles + cours)</p>
+          <p>✔️ Avec seulement 25€/semaine de chapeau + 2 cours/mois, le budget devient excédentaire sur 15 ans.</p>
+        </div>
+      </div>
+      <p style="margin-top:1rem; background:#e7d7bd; padding:0.8rem; border-radius:20px;">
+        🎪 En intégrant les activités artistiques comme source de revenus réguliers, le voyage de 10‑15 ans est viable et confortable.
+      </p>
+    </div>
+
+    <!-- ============ TAB 3 : DÉPENSES QUOTIDIENNES ============ -->
+    <div class="tab-content" id="tab3">
+      <h2 style="color:#5e4530;">💶 Coût quotidien moyen pour le couple</h2>
+      <div class="daily-box" style="justify-content: space-between;">
+        <div>
+          <p><strong>🍲 Nourriture :</strong> 6,00 €/jour (marchés, cuisine maison)</p>
+          <p><strong>🚌 Transport :</strong> 2,30 €/jour</p>
+          <p><strong>📄 Admin/visas :</strong> 0,50 €/jour</p>
+          <p><strong>📱 Connectivité :</strong> 0,30 €/jour</p>
+          <p><strong>🏥 Assurance :</strong> 3,60 €/jour</p>
+          <p><strong>🎭 Matériel art :</strong> 0,50 €/jour</p>
+          <hr>
+          <p class="highlight" style="font-size:1.3rem;">Total : ~13,20 €/jour pour deux</p>
+          <p style="font-size:0.9rem;">Soit 396 €/mois, 4 752 €/an, 47 520 €/10 ans, 71 280 €/15 ans</p>
+        </div>
+        <div style="background:#fff; border-radius:1.5rem; padding:1.5rem;">
+          <p>📊 <strong>Objectif avec 45 000€</strong></p>
+          <p>Budget quotidien disponible : <strong>12,30 €/jour</strong></p>
+          <p>➡️ Manque de 0,90€/jour facilement comblé par :</p>
+          <p>🎭 Un spectacle de rue par semaine (5‑10€ de chapeau)</p>
+          <p>📚 Un cours de français par mois (15‑20€)</p>
+          <p>🍳 Un atelier cuisine par mois (20‑30€)</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ TAB 4 : GAGNER SA ROUTE ============ -->
+    <div class="tab-content" id="tab4">
+      <div class="idea-card">
+        <h3>🎭 Gagner sa route : spectacles et cours</h3>
+        <p>En tant que couple français itinérant, vous possédez des compétences très recherchées à l'international.</p>
+
+        <div class="two-col">
+          <div>
+            <h4>🎪 Spectacles de rue</h4>
+            <ul style="line-height:2;">
+              <li><strong>Contes</strong> – adaptés aux cultures locales</li>
+              <li><strong>Chant</strong> – répertoire français (Piaf, Brassens)</li>
+              <li><strong>Théâtre muet</strong> – accessible à tous</li>
+              <li><strong>Chapeau moyen</strong> : 5‑30€/session</li>
+            </ul>
+          </div>
+          <div>
+            <h4>📚 Cours de français</h4>
+            <ul style="line-height:2;">
+              <li><strong>Public</strong> : adultes, enfants, expatriés</li>
+              <li><strong>Tarif</strong> : 5‑15€/h selon pays</li>
+              <li><strong>Promotion</strong> : bouche‑à‑oreille, réseaux locaux</li>
+            </ul>
+            <h4 style="margin-top:1rem;">🍳 Cours de cuisine française</h4>
+            <ul style="line-height:2;">
+              <li>Crêpes, quiche, ratatouille, tarte tatin</li>
+              <li>Tarif : 10‑25€/personne, 4‑6 participants</li>
+            </ul>
+          </div>
+        </div>
+
+        <p style="margin-top:1.5rem; background:#e7f0da; padding:0.8rem; border-radius:20px;">
+          <strong>💰 Revenu mensuel estimé</strong> : 100‑600€ selon la saison et le pays. En haute saison touristique, jusqu'à 600€/mois.
+        </p>
+      </div>
+
+      <div class="idea-card" style="margin-top:1rem; border-left-color:#5b8c5a;">
+        <h4>💼 Travail saisonnier (levier financier puissant)</h4>
+        <ul style="line-height:2.2;">
+          <li><strong>Norvège</strong> – hôtellerie, fermes, pêche : 2 200‑2 800€/mois net (EEA, accès libre)</li>
+          <li><strong>Australie / NZ</strong> – farm work (WHV F23 jusqu'à 35 ans)</li>
+          <li><strong>Canada</strong> – stations de ski, agriculture (WHV F23)</li>
+          <li><strong>Japon</strong> – enseignement anglais (WHV F23 ≤30 ans)</li>
+        </ul>
+        <p>Objectif : <strong>2‑4 mois de travail rémunéré par an</strong> pour reconstituer les réserves.</p>
+      </div>
+    </div>
+
+    <!-- ============ TAB 5 : HÉBERGEMENT & NOURRITURE ============ -->
+    <div class="tab-content" id="tab5">
+      <div class="idea-card">
+        <h3>🏕️ Stratégie hébergement 100% gratuit</h3>
+        <ul style="line-height:2.2;">
+          <li><strong>Tente sauvage</strong> – Norvège (Allemannsretten), Écosse, Balkans, Canada, AmSud</li>
+          <li><strong>WWOOF / Workaway</strong> – 4‑5h/j contre gîte et couvert</li>
+          <li><strong>Couchsurfing</strong> – très actif, profil couple artiste attractif</li>
+          <li><strong>Hospitalité spontanée</strong> – fréquente dans les villages</li>
+          <li><strong>HelpX / Auberges</strong> – bénévolat contre lit</li>
+        </ul>
+      </div>
+      <div class="idea-card" style="margin-top:1.5rem;">
+        <h3>🍲 Nourriture à 6€/jour pour deux</h3>
+        <ul style="line-height:2.2;">
+          <li><strong>Base</strong> – riz, pâtes, lentilles, flocons d'avoine (achat en gros)</li>
+          <li><strong>Fruits/légumes</strong> – marchés de fin de journée, invendus</li>
+          <li><strong>Protéines</strong> – œufs, légumineuses, tofu, poisson en boîte</li>
+          <li><strong>Cueillette</strong> – fruits sauvages, herbes aromatiques</li>
+          <li><strong>Échanges</strong> – cours de cuisine contre repas ou ingrédients</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ============ TAB 6 : LOGISTIQUE & SANTÉ ============ -->
+    <div class="tab-content" id="tab6">
+      <h2 style="color:#5e4530;">🛡️ Logistique, santé & vie numérique</h2>
+
+      <div class="two-col">
+        <div class="card">
+          <h3>📱 Téléphonie & banque</h3>
+          <ul style="line-height:2;">
+            <li><strong>Forfait FR</strong> – Free 2€/mois pour conserver le numéro (SMS bancaires)</li>
+            <li><strong>eSIM Data</strong> – Airalo, Ubigi, Revolut eSIM (selon pays)</li>
+            <li><strong>Banque nomade</strong> – Revolut + Wise (taux interbancaire)</li>
+            <li><strong>Compte français</strong> – conserver une adresse stable en France</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>🏥 Assurances & santé</h3>
+          <ul style="line-height:2;">
+            <li><strong>Assurance long séjour</strong> – SafetyWing (~42$/mois/pers), Chapka, ACS</li>
+            <li><strong>Carte CEAM</strong> – valable dans l'EEE (souscrire avant départ)</li>
+            <li><strong>Téléconsultation</strong> – Livi, Qare, Médecin Direct</li>
+            <li><strong>Dossier médical numérique</strong> – groupes sanguins, allergies, antécédents (FR/EN)</li>
+            <li><strong>Trousse avancée</strong> – antibiotiques large spectre, antipaludéens (selon zone), EpiPen</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:1rem;">
+        <h3>💉 Vaccinations & bilan</h3>
+        <ul style="line-height:2.2;">
+          <li>Hépatites A/B, Tétanos, Typhoïde, Fièvre jaune (Amazonie), Rage, Encéphalite japonaise</li>
+          <li>Bilan dentaire complet avant départ (soins dentaires chers hors Asie/Balkans)</li>
+          <li>Ordonnances en DCI (nom générique) – reconnues mondialement</li>
+        </ul>
+      </div>
+
+      <div class="alert-box" style="margin-top:1rem;">
+        <strong>⚠️ Fonds d'urgence</strong> – 3 000 € minimum, intouchable, pour rapatriement ou imprévu majeur.
+      </div>
+    </div>
+
+    <!-- ============ TAB 7 : VISAS & ADMIN ============ -->
+    <div class="tab-content" id="tab7">
+      <h2 style="color:#5e4530;">🛂 Visas & démarches administratives</h2>
+      <p>Passeport français = accès sans visa à 186 pays. Points critiques : WHV (limite d'âge) et durée de séjour.</p>
+
+      <div class="two-col">
+        <div class="card">
+          <h3>🌍 Europe & EEE</h3>
+          <ul style="line-height:2.2;">
+            <li>Norvège – libre circulation <span class="visa-status">✔</span></li>
+            <li>Écosse, Irlande – passeport suffisant (≤6 mois) <span class="visa-status">✔</span></li>
+            <li>Balkans (hors UE) – sans visa (≤90j) <span class="visa-status">✔</span></li>
+            <li>Turquie – eVisa (~20$) <span class="visa-status warn">e‑visa</span></li>
+            <li>Géorgie – sans visa (≤365j) <span class="visa-status">✔</span></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>🌏 Asie</h3>
+          <ul style="line-height:2.2;">
+            <li>Thaïlande – 30j (extension possible) <span class="visa-status">✔</span></li>
+            <li>Vietnam – eVisa 90j (~25$) <span class="visa-status warn">e‑visa</span></li>
+            <li>Cambodge – VOA (~30$) <span class="visa-status warn">VOA</span></li>
+            <li>Chine – visa ambassade requis <span class="visa-status danger">obligatoire</span></li>
+            <li>Japon – 90j + WHV F23 ≤30 ans <span class="visa-status">✔</span></li>
+            <li>Corée du Sud – 90j sans visa <span class="visa-status">✔</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <h3>🌎 Amériques & Océanie</h3>
+          <ul style="line-height:2.2;">
+            <li>Canada – eTA + WHV F23 ≤35 ans <span class="visa-status warn">eTA</span></li>
+            <li>USA – ESTA (~21$) <span class="visa-status warn">ESTA</span></li>
+            <li>Mexique – 180j sans visa <span class="visa-status">✔</span></li>
+            <li>Brésil, Argentine, Chili – sans visa <span class="visa-status">✔</span></li>
+            <li>Australie – WHV F23 ≤35 ans / touriste H37 <span class="visa-status danger">WHV F23</span></li>
+            <li>Nouvelle‑Zélande – NZeTA + WHV F23 ≤35 ans <span class="visa-status warn">NZeTA</span></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>⚠️ WHV pour F23 (âges limites)</h3>
+          <ul style="line-height:2.2;">
+            <li>Australie – jusqu'à 35 ans ✓</li>
+            <li>Nouvelle‑Zélande – jusqu'à 35 ans ✓</li>
+            <li>Japon – jusqu'à 30 ans ✓</li>
+            <li>Canada – jusqu'à 35 ans ✓</li>
+            <li style="color:#a13d3d;"><strong>H37 – non éligible à tous les WHV</strong></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:1rem;">
+        <h3>📋 Checklist administrative avant départ</h3>
+        <ul class="checklist" style="line-height:2.4;">
+          <li>Passeports validité ≥ 18 mois après départ</li>
+          <li>Assurance voyage long séjour souscrite</li>
+          <li>Maintien des droits CPAM (formulaire S1 si travail EEA)</li>
+          <li>Domiciliation fiscale française (adresse famille/ami)</li>
+          <li>Comptes Revolut / Wise + compte français</li>
+          <li>Carnet de vaccination à jour</li>
+          <li>Procuration notariée pour un proche en France</li>
+          <li>Étudier l'ARCE (France Travail) si droits ouverts</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ============ TAB 8 : VIE DE COUPLE & POINTS CLÉS ============ -->
+    <div class="tab-content" id="tab8">
+      <h2 style="color:#5e4530;">❤️ Vie de couple, âge & lenteur</h2>
+
+      <div class="two-col">
+        <div class="card">
+          <h3>🧑‍🤝‍🧑 Défis du couple en mobilité</h3>
+          <ul style="line-height:2.2;">
+            <li><strong>Espaces individuels</strong> – jours solo réguliers (1j/semaine)</li>
+            <li><strong>Décisions partagées</strong> – alterner le rôle de décideur principal</li>
+            <li><strong>Rythmes différents</strong> (F23 / H37) – anticiper les écarts d'énergie et d'ambition</li>
+            <li><strong>Stress financier</strong> – compte commun + comptes individuels, revue mensuelle</li>
+            <li><strong>Réseau social</strong> – s'immerger dans les communautés locales (Workaway, clubs)</li>
+            <li><strong>Divergence sur la durée</strong> – révision tous les 12 mois (continuer / pause / retour)</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>⏳ Facteur âge sur 10‑15 ans</h3>
+          <ul style="line-height:2.2;">
+            <li><strong>F23 → 38‑45 ans</strong> – évolution des envies de confort, stabilité, éventuelle maternité</li>
+            <li><strong>H37 → 52‑60 ans</strong> – récupération physique plus lente, priorité aux articulations et au sommeil</li>
+            <li><strong>Préserver le corps</strong> – bâtons de marche, sac bien réglé, pauses régulières</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>🧠 Syndrome de satiété touristique & lenteur</h3>
+        <ul style="line-height:2.2;">
+          <li><strong>Lassitude</strong> – la nouveauté s'émousse au fil des années</li>
+          <li><strong>Remède</strong> – s'installer plusieurs mois dans un lieu coup de cœur (WWOOF long, location bon marché)</li>
+          <li><strong>Fil conducteur</strong> – apprentissage de langues, écriture, photographie, artisanat, agriculture</li>
+          <li><strong>Pauses régulières</strong> – 2‑3 mois de "base arrière" pour recharger les batteries</li>
+        </ul>
+      </div>
+
+      <div class="card" style="margin-top:1rem;">
+        <h3>🔙 Anticiper le retour (même hypothétique)</h3>
+        <ul style="line-height:2.2;">
+          <li><strong>Emploi</strong> – documenter le voyage (blog, LinkedIn, compétences acquises)</li>
+          <li><strong>Logement</strong> – garder des références de Workaway / WWOOF</li>
+          <li><strong>Retraite H37</strong> – cotisation volontaire CFE (~900€/an) ou rachat de trimestres</li>
+          <li><strong>Santé mentale</strong> – préparer la transition (reverse culture shock)</li>
+          <li><strong>Fiscalité</strong> – consulter un expert-comptable spécialisé expatriés</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ============ TAB 9 : MATÉRIEL & PRÉPARATION PHYSIQUE ============ -->
+    <div class="tab-content" id="tab9">
+      <h2 style="color:#5e4530;">🎒 Matériel & préparation biomécanique</h2>
+
+      <div class="two-col">
+        <div class="card">
+          <h3>🎒 Équipement long terme</h3>
+          <ul style="line-height:2.2;">
+            <li><strong>Sacs</strong> – Osprey Atmos/Aura 50‑65L + daypack 20L</li>
+            <li><strong>Tente</strong> – MSR Hubba Hubba ou Hilleberg Akto (4 saisons)</li>
+            <li><strong>Sac de couchage</strong> – duvet synthétique -10°C + liner soie pour pays chauds</li>
+            <li><strong>Bâtons de marche</strong> – indispensables pour réduire les impacts (‑25% genoux)</li>
+            <li><strong>Purification eau</strong> – UV‑C (LARQ) + filtre mécanique (Sawyer) + pastilles</li>
+            <li><strong>Électronique</strong> – 1 laptop léger, 2 téléphones, batterie solaire 20 000 mAh</li>
+            <li><strong>Vêtements</strong> – système layering (laine mérinos, mid‑layer, Gore‑Tex)</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>🦵 Biomécanique & santé physique</h3>
+          <ul style="line-height:2.2;">
+            <li><strong>Réglage du sac</strong> – 70‑80% du poids sur les hanches, épaules délestées</li>
+            <li><strong>Chaussures</strong> – boots de marche robustes, semelles adaptées aux terrains variés</li>
+            <li><strong>Étirements quotidiens</strong> – dos, jambes, chevilles</li>
+            <li><strong>Hygiène du sommeil</strong> – matelas autogonflant, oreiller compact</li>
+            <li><strong>Rythme</strong> – ne pas dépasser 15‑20 km/j en charge, pauses régulières</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="idea-card" style="margin-top:1rem;">
+        <h4>📦 Investissement initial (matériel de qualité)</h4>
+        <ul style="line-height:2.2;">
+          <li><strong>Sacs + tente + couchage</strong> – 800‑1 200€ pour deux</li>
+          <li><strong>Vêtements & chaussures</strong> – 300‑500€/pers</li>
+          <li><strong>Électronique & purification</strong> – 500‑800€</li>
+          <li><strong>Règle des 5 ans</strong> – un équipement premium remplacé 1 fois en 15 ans coûte moins cher que du bas de gamme renouvelé 3 fois.</li>
+        </ul>
+      </div>
+
+      <div class="alert-box" style="margin-top:1rem;">
+        <strong>🧊 Norvège & grand froid :</strong> prévoir des vêtements techniques, un réchaud adapté (gaz hiver) et une tente 4 saisons pour les nuits en Lofoten ou en montagne.
+      </div>
+    </div>
+
+    <div class="footer-note">
+      🎭 Bordeaux · Septembre 2027 · 10‑15 ans · 45 000€ · 6€/jour · Artistes de rue, contes, cours de français & cuisine
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const tabs = document.querySelectorAll('.tab-btn');
+      const contents = document.querySelectorAll('.tab-content');
+      const mapping = {
+        tab1Btn: 'tab1',
+        tab2Btn: 'tab2',
+        tab3Btn: 'tab3',
+        tab4Btn: 'tab4',
+        tab5Btn: 'tab5',
+        tab6Btn: 'tab6',
+        tab7Btn: 'tab7',
+        tab8Btn: 'tab8',
+        tab9Btn: 'tab9'
+      };
+
+      tabs.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const id = e.currentTarget.id;
+          tabs.forEach(b => b.classList.remove('active'));
+          e.currentTarget.classList.add('active');
+          contents.forEach(c => c.classList.remove('active'));
+          if (mapping[id]) {
+            document.getElementById(mapping[id]).classList.add('active');
+          }
+        });
+      });
+    })();
+  </script>
 </body>
 </html>
