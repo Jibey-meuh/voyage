@@ -1,453 +1,566 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🌍 Hébergements · Carte & Distances</title>
-  <!-- Google Fonts : Poppins -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <!-- Google Maps JS API (chargée en fin de body) -->
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Escales — Hébergements de voyageurs</title>
 
-    body {
-      background: #faf3ed;  /* beige chaud */
-      color: #3e2e28;
-      padding: 1rem;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+<!-- Leaflet CSS via cdnjs -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
 
-    .container {
-      max-width: 1300px;
-      margin: 0 auto;
-      width: 100%;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
+<!-- Polices -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-    /* ===== EN-TÊTE & CHAMP AUTOCOMPLETE ===== */
-    .search-section {
-      background: #fff9f4;
-      padding: 1.2rem 1.5rem;
-      border-radius: 48px;
-      box-shadow: 0 6px 18px rgba(180, 120, 80, 0.12);
-      margin-bottom: 1.8rem;
-      border: 1px solid #f0ded0;
-    }
+<style>
+  /* ===== Jetons de design ===== */
+  :root {
+    --fond: #F2EFE6;
+    --fond-carte: #E8E4D6;
+    --encre: #1B2E28;
+    --encre-clair: #4A5C55;
+    --accent: #C79A3D;
+    --accent-fonce: #9C7526;
+    --sauge: #3D6B5C;
+    --bordure: #D9D3C3;
+    --blanc: #FFFFFF;
+    --erreur: #A6432F;
 
-    .search-section label {
-      display: block;
-      font-weight: 500;
-      font-size: 0.9rem;
-      color: #a67c5c;
-      letter-spacing: 0.5px;
-      margin-bottom: 0.35rem;
-    }
+    --police-titre: 'Space Grotesk', sans-serif;
+    --police-texte: 'Work Sans', sans-serif;
+    --police-donnee: 'IBM Plex Mono', monospace;
+  }
 
-    .autocomplete-wrapper {
-      position: relative;
-      width: 100%;
-    }
+  * { box-sizing: border-box; }
 
-    #pac-input {
-      width: 100%;
-      padding: 1rem 1.5rem;
-      border: 2px solid #ebd7c8;
-      border-radius: 60px;
-      font-size: 1rem;
-      background: #fefcf9;
-      color: #3e2e28;
-      outline: none;
-      transition: border 0.2s, box-shadow 0.2s;
-      font-weight: 400;
-      letter-spacing: 0.3px;
-    }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--fond);
+    color: var(--encre);
+    font-family: var(--police-texte);
+  }
 
-    #pac-input:focus {
-      border-color: #dbaa7a;
-      box-shadow: 0 0 0 4px rgba(219, 170, 122, 0.2);
-    }
+  /* ===== En-tête ===== */
+  header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--bordure);
+  }
 
-    #pac-input::placeholder {
-      color: #baa08c;
-      font-weight: 300;
-    }
+  /* Tampon "postmark" — élément signature de l'identité visuelle */
+  .tampon {
+    flex-shrink: 0;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: 2px dashed var(--accent-fonce);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(-8deg);
+    font-family: var(--police-titre);
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--accent-fonce);
+    background: var(--blanc);
+  }
 
-    /* ===== CARTE ===== */
-    #map {
-      width: 100%;
-      height: 55vh;
-      min-height: 400px;
-      border-radius: 28px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(140, 100, 70, 0.15);
-      border: 1px solid #e6d4c4;
-      margin-bottom: 2rem;
-      background: #ece3da; /* fallback */
-    }
+  .titre-app h1 {
+    font-family: var(--police-titre);
+    font-weight: 700;
+    font-size: 20px;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
 
-    /* ===== TABLEAU DES DISTANCES ===== */
-    .distances-section {
-      background: #fff9f4;
-      border-radius: 28px;
-      padding: 1.5rem 1.8rem;
-      box-shadow: 0 6px 20px rgba(150, 110, 80, 0.08);
-      border: 1px solid #f0ded0;
-      margin-top: 0.25rem;
-    }
+  .titre-app p {
+    margin: 2px 0 0;
+    font-size: 13px;
+    color: var(--encre-clair);
+  }
 
-    .distances-section h2 {
-      font-weight: 600;
-      font-size: 1.2rem;
-      color: #6b4d38;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 1rem;
-    }
+  /* ===== Zone de recherche ===== */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 18px 20px 32px;
+  }
 
-    .distances-section h2 small {
-      font-weight: 400;
-      font-size: 0.75rem;
-      color: #a4846c;
-      background: #f0e4da;
-      padding: 0.2rem 0.9rem;
-      border-radius: 30px;
-      letter-spacing: 0.3px;
-    }
+  .zone-recherche {
+    position: relative;
+    margin-bottom: 18px;
+  }
 
-    .table-responsive {
-      overflow-x: auto;
-      border-radius: 18px;
-    }
+  label.libelle-recherche {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--encre-clair);
+    margin-bottom: 6px;
+  }
 
-    #distance-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.9rem;
-      min-width: 520px;
-    }
+  #champ-recherche {
+    width: 100%;
+    padding: 13px 44px 13px 14px;
+    font-size: 16px;
+    font-family: var(--police-texte);
+    border: 1.5px solid var(--bordure);
+    border-radius: 10px;
+    background: var(--blanc);
+    color: var(--encre);
+    outline: none;
+    transition: border-color 0.15s ease;
+  }
 
-    #distance-table th {
-      text-align: left;
-      padding: 0.9rem 0.5rem 0.6rem 0.5rem;
-      font-weight: 600;
-      color: #5c4433;
-      border-bottom: 2px solid #e4d2c2;
-      letter-spacing: 0.3px;
-    }
+  #champ-recherche:focus {
+    border-color: var(--accent);
+  }
 
-    #distance-table td {
-      padding: 0.7rem 0.5rem;
-      border-bottom: 1px solid #eee3da;
-      color: #3f3128;
-    }
+  .indicateur-recherche {
+    position: absolute;
+    right: 14px;
+    top: 38px;
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--bordure);
+    border-top-color: var(--accent-fonce);
+    border-radius: 50%;
+    animation: tourner 0.7s linear infinite;
+    display: none;
+  }
 
-    #distance-table tr:last-child td {
-      border-bottom: none;
-    }
+  .indicateur-recherche.visible { display: block; }
 
-    #distance-table .type-badge {
-      display: inline-block;
-      padding: 0.2rem 0.8rem;
-      border-radius: 40px;
-      font-size: 0.7rem;
-      font-weight: 500;
-      background: #f0e4da;
-      color: #4d3a2c;
-      letter-spacing: 0.3px;
-    }
+  @keyframes tourner {
+    to { transform: rotate(360deg); }
+  }
 
-    .dist-note {
-      display: inline-block;
-      background: #f7eee7;
-      padding: 0.1rem 0.6rem;
-      border-radius: 30px;
-      font-weight: 500;
-      font-size: 0.8rem;
-    }
+  /* Liste de suggestions */
+  .liste-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 4px;
+    background: var(--blanc);
+    border: 1.5px solid var(--bordure);
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(27, 46, 40, 0.1);
+    max-height: 280px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+  }
 
-    .dist-avi {
-      color: #7d6452;
-      font-size: 0.75rem;
-    }
+  .liste-suggestions.visible { display: block; }
 
-    .distance-value {
-      font-weight: 500;
-      color: #a56f4a;
-    }
+  .suggestion {
+    padding: 11px 14px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--bordure);
+    font-size: 14px;
+  }
 
-    .empty-row td {
-      padding: 1.2rem 0.5rem;
-      text-align: center;
-      color: #a4846c;
-      font-style: italic;
-    }
+  .suggestion:last-child { border-bottom: none; }
 
-    /* ===== RESPONSIVE ===== */
-    @media (max-width: 640px) {
-      body { padding: 0.6rem; }
-      .search-section { padding: 1rem; }
-      #pac-input { padding: 0.8rem 1.2rem; }
-      .distances-section { padding: 1rem; }
-      #map { min-height: 300px; }
-    }
+  .suggestion:hover,
+  .suggestion:focus,
+  .suggestion.actif {
+    background: var(--fond);
+  }
 
-    /* petites retouches */
-    .text-muted {
-      color: #a4846c;
-      font-weight: 300;
-      font-size: 0.75rem;
-    }
-  </style>
+  .suggestion .nom-lieu {
+    font-weight: 500;
+    color: var(--encre);
+  }
+
+  .suggestion .detail-lieu {
+    font-size: 12px;
+    color: var(--encre-clair);
+    margin-top: 2px;
+  }
+
+  .message-suggestion {
+    padding: 12px 14px;
+    font-size: 13px;
+    color: var(--encre-clair);
+  }
+
+  /* ===== Carte ===== */
+  #carte {
+    width: 100%;
+    height: 58vh;
+    min-height: 340px;
+    border-radius: 12px;
+    border: 1.5px solid var(--bordure);
+    background: var(--fond-carte);
+  }
+
+  @media (min-width: 700px) {
+    #carte { height: 65vh; }
+  }
+
+  /* ===== Légende des types d'hébergement ===== */
+  .legende {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 12px;
+    font-size: 12px;
+    color: var(--encre-clair);
+  }
+
+  .legende-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .legende-pastille {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ===== Icônes de marqueurs (tampon miniature par type) ===== */
+  .icone-tampon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px dashed var(--blanc);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    box-shadow: 0 2px 6px rgba(27, 46, 40, 0.35);
+  }
+
+  /* ===== Contenu des popups Leaflet ===== */
+  .leaflet-popup-content-wrapper {
+    border-radius: 10px;
+    font-family: var(--police-texte);
+  }
+
+  .popup-hebergement { min-width: 190px; }
+
+  .popup-hebergement .popup-type {
+    display: inline-block;
+    font-family: var(--police-donnee);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 3px 8px;
+    border-radius: 20px;
+    color: var(--blanc);
+    margin-bottom: 6px;
+  }
+
+  .popup-hebergement h3 {
+    font-family: var(--police-titre);
+    font-size: 15px;
+    margin: 0 0 4px;
+  }
+
+  .popup-hebergement .popup-lieu {
+    font-size: 12px;
+    color: var(--encre-clair);
+    margin-bottom: 6px;
+  }
+
+  .popup-hebergement .popup-description {
+    font-size: 13px;
+    line-height: 1.4;
+    margin-bottom: 10px;
+  }
+
+  .popup-hebergement .popup-lien {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--blanc);
+    background: var(--sauge);
+    padding: 7px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+  }
+
+  .popup-hebergement .popup-lien:hover {
+    background: var(--encre);
+  }
+
+  /* Focus clavier visible, accessibilité */
+  a:focus-visible,
+  button:focus-visible,
+  .suggestion:focus-visible {
+    outline: 2px solid var(--sauge);
+    outline-offset: 2px;
+  }
+</style>
 </head>
 <body>
-<div class="container">
 
-  <!-- CHAMP AUTOCOMPLETE -->
-  <div class="search-section">
-    <label for="pac-input">📍 Choisissez une ville ou une adresse</label>
-    <div class="autocomplete-wrapper">
-      <input id="pac-input" type="text" placeholder="Recherchez une ville, une adresse..." />
-    </div>
+<header>
+  <div class="tampon">EV</div>
+  <div class="titre-app">
+    <h1>Escales</h1>
+    <p>Hébergements de voyageurs près de chez vous</p>
+  </div>
+</header>
+
+<main>
+  <div class="zone-recherche">
+    <label class="libelle-recherche" for="champ-recherche">Rechercher une ville ou un lieu</label>
+    <input
+      type="text"
+      id="champ-recherche"
+      placeholder="Ex : Bordeaux, Lisbonne, Chiang Mai…"
+      autocomplete="off"
+    />
+    <div class="indicateur-recherche" id="indicateur-recherche"></div>
+    <div class="liste-suggestions" id="liste-suggestions" role="listbox"></div>
   </div>
 
-  <!-- CARTE -->
-  <div id="map"></div>
+  <div class="legende" id="legende"></div>
 
-  <!-- TABLEAU DES DISTANCES -->
-  <div class="distances-section">
-    <h2>
-      🚗 Distances depuis le lieu sélectionné
-      <small id="origin-label">Paris (défaut)</small>
-    </h2>
-    <div class="table-responsive">
-      <table id="distance-table">
-        <thead>
-          <tr>
-            <th>Hébergement</th>
-            <th>Type</th>
-            <th>Note</th>
-            <th>Distance (km)</th>
-          </tr>
-        </thead>
-        <tbody id="distance-body">
-          <!-- Rempli par JS -->
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
+  <div id="carte"></div>
+</main>
 
-<!-- ============================================================ -->
-<!-- Google Maps API + JS intégré                                 -->
-<!-- ============================================================ -->
+<!-- Leaflet JS via cdnjs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+
 <script>
-  // ----- DONNÉES SIMULÉES (exactement selon cahier des charges) -----
-  const hebergements = [
-    { nom: "Chez Marie", type: "Couchsurfing", contact: "marie@example.com", lat: 48.8566, lng: 2.3522, note: 4.5, avis: 23 },
-    { nom: "Ferme Bio Valérie", type: "Wwoofing", contact: "valerie@fermebio.fr", lat: 48.8600, lng: 2.3400, note: 4.8, avis: 41 },
-    { nom: "Auberge du Voyageur", type: "Couchsurfing", contact: "auberge@example.com", lat: 48.8700, lng: 2.3600, note: 4.2, avis: 17 },
-    { nom: "Jardin Partagé HelpX", type: "HelpX", contact: "helpx@jardin.fr", lat: 48.8500, lng: 2.3700, note: 4.6, avis: 34 },
-    { nom: "Loft Urbain Gratuit", type: "Couchsurfing", contact: "loft@urbain.fr", lat: 48.8450, lng: 2.3300, note: 3.9, avis: 12 },
-    { nom: "Ferme Pédagogique", type: "Wwoofing", contact: "pedago@ferme.fr", lat: 48.8300, lng: 2.4000, note: 4.7, avis: 56 },
-    { nom: "Studio Échange Maison", type: "HomeExchange", contact: "studio@echange.fr", lat: 48.8800, lng: 2.3200, note: 4.3, avis: 29 },
-    { nom: "Yourte Couchsurfing", type: "Couchsurfing", contact: "yourte@nature.fr", lat: 48.8400, lng: 2.4200, note: 4.1, avis: 19 },
-    { nom: "Potager Collectif", type: "Wwoofing", contact: "potager@collectif.org", lat: 48.8200, lng: 2.3500, note: 4.9, avis: 62 },
-    { nom: "Appart'Artiste", type: "HelpX", contact: "art@helpx.fr", lat: 48.8650, lng: 2.3800, note: 4.0, avis: 8 }
-  ];
+  // ===== Initialisation de la carte =====
+  // Vue par défaut centrée sur la France, sera recentrée après une recherche
+  const carte = L.map('carte').setView([46.6, 2.2], 5);
 
-  // ----- COULEURS PAR TYPE -----
-  const typeColors = {
-    'Couchsurfing': '#3182ce', // bleu
-    'Wwoofing': '#38a169',     // vert
-    'HelpX': '#dd6b20',        // orange
-    'HomeExchange': '#e53e3e', // rouge (Autre)
-    'default': '#e53e3e'
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    maxZoom: 19
+  }).addTo(carte);
+
+  let marqueurRecherche = null;
+
+  // ===== Configuration visuelle par type de réseau =====
+  // Couleurs cohérentes avec les jetons de design, réutilisées pour icônes,
+  // badges de popup et légende
+  const typesReseaux = {
+    couchsurfing: { libelle: 'Couchsurfing', couleur: '#C79A3D', abbrev: 'CS' },
+    wwoofing:     { libelle: 'WWOOFing',     couleur: '#3D6B5C', abbrev: 'WW' },
+    autre:        { libelle: 'Autre réseau', couleur: '#6B5CA5', abbrev: '•' }
   };
 
-  // ----- VARIABLES GLOBALES -----
-  let map;
-  let markers = [];
-  let infoWindow = null;
-  let autocomplete;
-  let currentOrigin = { lat: 48.8566, lng: 2.3522 }; // Paris par défaut
-  let originLabel = 'Paris (défaut)';
-
-  // ----- ÉLÉMENTS DOM -----
-  const distanceBody = document.getElementById('distance-body');
-  const originLabelEl = document.getElementById('origin-label');
-
-  // ----- FONCTIONS UTILITAIRES -----
-  function getColorForType(type) {
-    return typeColors[type] || typeColors.default;
-  }
-
-  // Calcul de distance (Haversine) en km entre deux points
-  function haversineDistance(lat1, lng1, lat2, lng2) {
-    const R = 6371;
-    const toRad = (deg) => (deg * Math.PI) / 180;
-    const dLat = toRad(lat2 - lat1);
-    const dLng = toRad(lng2 - lng1);
-    const a = Math.sin(dLat/2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng/2) ** 2;
-    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  }
-
-  // ----- METTRE À JOUR LE TABLEAU DES DISTANCES -----
-  function updateDistanceTable(originLat, originLng) {
-    const rows = hebergements.map(h => {
-      const dist = haversineDistance(originLat, originLng, h.lat, h.lng);
-      return { ...h, distance: dist };
-    });
-    // tri par distance croissante
-    rows.sort((a, b) => a.distance - b.distance);
-
-    // construction du HTML
-    let html = '';
-    if (rows.length === 0) {
-      html = `<tr class="empty-row"><td colspan="4">Aucun hébergement trouvé</td></tr>`;
-    } else {
-      rows.forEach(h => {
-        const noteStr = h.note.toFixed(1);
-        html += `<tr>
-          <td><strong>${h.nom}</strong></td>
-          <td><span class="type-badge" style="background:${getColorForType(h.type)}20; color:${getColorForType(h.type)};">${h.type}</span></td>
-          <td><span class="dist-note">⭐ ${noteStr}</span> <span class="dist-avi">(${h.avis} avis)</span></td>
-          <td class="distance-value">${h.distance.toFixed(1)} km</td>
-        </tr>`;
-      });
+  // ===== Données de démonstration =====
+  // Tableau JSON en dur — à remplacer par une vraie base de données.
+  // Chaque entrée pointe vers un lien de profil externe, jamais de contact direct.
+  const hebergementsDemo = [
+    {
+      id: 1, nom: 'Chez Amina', type: 'couchsurfing',
+      ville: 'Bordeaux, France', lat: 44.8412, lon: -0.5798,
+      description: 'Canapé disponible dans un appartement chaleureux près des quais.',
+      lienProfil: 'https://www.couchsurfing.com/'
+    },
+    {
+      id: 2, nom: 'Ferme du Vallon', type: 'wwoofing',
+      ville: 'Sarlat-la-Canéda, France', lat: 44.8905, lon: 1.2160,
+      description: 'Maraîchage bio, hébergement en dortoir contre 4h d\'aide par jour.',
+      lienProfil: 'https://wwoof.fr/'
+    },
+    {
+      id: 3, nom: 'Chez Julien & Marta', type: 'couchsurfing',
+      ville: 'Lyon, France', lat: 45.7640, lon: 4.8357,
+      description: 'Matelas gonflable dans le salon, quartier animé de la Croix-Rousse.',
+      lienProfil: 'https://www.couchsurfing.com/'
+    },
+    {
+      id: 4, nom: 'Refuge des Cimes', type: 'autre',
+      ville: 'Annecy, France', lat: 45.8992, lon: 6.1294,
+      description: 'Échange gîte contre coup de main sur un réseau d\'hospitalité local.',
+      lienProfil: 'https://www.helpx.net/'
+    },
+    {
+      id: 5, nom: 'Domaine Terra Viva', type: 'wwoofing',
+      ville: 'Avignon, France', lat: 43.9493, lon: 4.8055,
+      description: 'Vignoble en permaculture, chambre individuelle et repas partagés.',
+      lienProfil: 'https://wwoof.fr/'
+    },
+    {
+      id: 6, nom: 'Chez Yasmine', type: 'couchsurfing',
+      ville: 'Lisbonne, Portugal', lat: 38.7223, lon: -9.1393,
+      description: 'Chambre d\'ami avec vue sur le Tage, accueil de voyageurs solo.',
+      lienProfil: 'https://www.couchsurfing.com/'
+    },
+    {
+      id: 7, nom: 'Ecolieu Les Sources', type: 'autre',
+      ville: 'Toulouse, France', lat: 43.6047, lon: 1.4442,
+      description: 'Habitat participatif ouvert aux voyageurs pour quelques nuits.',
+      lienProfil: 'https://www.helpx.net/'
+    },
+    {
+      id: 8, nom: 'Verger de la Colline', type: 'wwoofing',
+      ville: 'Nantes, France', lat: 47.2184, lon: -1.5536,
+      description: 'Petit verger familial, cabane en bois pour les bénévoles.',
+      lienProfil: 'https://wwoof.fr/'
     }
-    distanceBody.innerHTML = html;
+  ];
+
+  // Crée une icône Leaflet en forme de tampon coloré selon le type
+  function creerIconeTampon(type) {
+    const config = typesReseaux[type] || typesReseaux.autre;
+    return L.divIcon({
+      className: '', // évite les styles par défaut de Leaflet
+      html: `<div class="icone-tampon" style="background:${config.couleur}">${config.abbrev}</div>`,
+      iconSize: [30, 30],
+      iconAnchor: [15, 15],
+      popupAnchor: [0, -15]
+    });
   }
 
-  // ----- CRÉER LES MARQUEURS (avec InfoWindow) -----
-  function createMarkers() {
-    // supprimer les anciens marqueurs
-    markers.forEach(m => m.setMap(null));
-    markers = [];
+  // Construit le contenu HTML d'une popup d'hébergement
+  function construirePopup(hebergement) {
+    const config = typesReseaux[hebergement.type] || typesReseaux.autre;
+    return `
+      <div class="popup-hebergement">
+        <span class="popup-type" style="background:${config.couleur}">${config.libelle}</span>
+        <h3>${hebergement.nom}</h3>
+        <div class="popup-lieu">${hebergement.ville}</div>
+        <div class="popup-description">${hebergement.description}</div>
+        <a class="popup-lien" href="${hebergement.lienProfil}" target="_blank" rel="noopener noreferrer">
+          Voir le profil ↗
+        </a>
+      </div>
+    `;
+  }
 
-    hebergements.forEach(h => {
-      const color = getColorForType(h.type);
-      const icon = {
-        path: 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z',
-        fillColor: color,
-        fillOpacity: 1,
-        strokeWeight: 1.2,
-        strokeColor: '#ffffff',
-        scale: 1.2,
-        anchor: new google.maps.Point(12, 20)
-      };
+  // Affiche tous les hébergements de démonstration sur la carte
+  function afficherHebergements(liste) {
+    liste.forEach((hebergement) => {
+      L.marker([hebergement.lat, hebergement.lon], {
+        icon: creerIconeTampon(hebergement.type)
+      })
+        .addTo(carte)
+        .bindPopup(construirePopup(hebergement));
+    });
+  }
 
-      const marker = new google.maps.Marker({
-        position: { lat: h.lat, lng: h.lng },
-        map: map,
-        icon: icon,
-        title: h.nom,
-        animation: google.maps.Animation.DROP
+  // Construit la légende à partir de la configuration des types
+  function afficherLegende() {
+    const legende = document.getElementById('legende');
+    legende.innerHTML = Object.values(typesReseaux).map(config => `
+      <div class="legende-item">
+        <span class="legende-pastille" style="background:${config.couleur}"></span>
+        ${config.libelle}
+      </div>
+    `).join('');
+  }
+
+  afficherHebergements(hebergementsDemo);
+  afficherLegende();
+
+  // ===== Éléments du DOM =====
+  const champRecherche = document.getElementById('champ-recherche');
+  const listeSuggestions = document.getElementById('liste-suggestions');
+  const indicateurRecherche = document.getElementById('indicateur-recherche');
+
+  let delaiRecherche = null; // pour le debounce
+  let suggestionsActuelles = [];
+
+  // ===== Géocodage via l'API Nominatim (OpenStreetMap) =====
+  async function rechercherLieux(requete) {
+    // Nominatim demande un usage raisonnable : on limite les résultats
+    // et on respecte un délai avant chaque appel (debounce plus bas)
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(requete)}&limit=5&addressdetails=1&accept-language=fr`;
+
+    const reponse = await fetch(url);
+    if (!reponse.ok) throw new Error('Échec de la requête Nominatim');
+    return reponse.json();
+  }
+
+  function afficherSuggestions(resultats) {
+    suggestionsActuelles = resultats;
+    listeSuggestions.innerHTML = '';
+
+    if (resultats.length === 0) {
+      listeSuggestions.innerHTML = '<div class="message-suggestion">Aucun lieu trouvé.</div>';
+      listeSuggestions.classList.add('visible');
+      return;
+    }
+
+    resultats.forEach((lieu, index) => {
+      const item = document.createElement('div');
+      item.className = 'suggestion';
+      item.setAttribute('role', 'option');
+      item.tabIndex = 0;
+
+      const nomPrincipal = lieu.display_name.split(',')[0];
+      const detail = lieu.display_name.split(',').slice(1, 3).join(',').trim();
+
+      item.innerHTML = `
+        <div class="nom-lieu">${nomPrincipal}</div>
+        <div class="detail-lieu">${detail}</div>
+      `;
+
+      const selectionner = () => choisirLieu(lieu);
+      item.addEventListener('click', selectionner);
+      item.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') selectionner();
       });
 
-      // InfoWindow
-      marker.addListener('click', () => {
-        const content = `
-          <div style="font-family:Poppins, sans-serif; padding:4px 2px; max-width:220px; color:#3e2e28;">
-            <div style="font-weight:600; font-size:1.05rem;">${h.nom}</div>
-            <div style="display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 4px;">
-              <span style="background:${getColorForType(h.type)}20; padding:0 10px; border-radius:40px; font-size:0.7rem; color:${getColorForType(h.type)};">${h.type}</span>
-              <span style="color:#7d6452; font-size:0.75rem;">✉️ ${h.contact}</span>
-            </div>
-            <div style="margin-top:4px;">
-              <span style="font-weight:500;">⭐ ${h.note.toFixed(1)}</span>
-              <span style="color:#7d6452; font-size:0.75rem; margin-left:6px;">(${h.avis} avis)</span>
-            </div>
-          </div>
-        `;
-        if (infoWindow) infoWindow.close();
-        infoWindow = new google.maps.InfoWindow({ content });
-        infoWindow.open(map, marker);
-      });
-
-      markers.push(marker);
+      listeSuggestions.appendChild(item);
     });
+
+    listeSuggestions.classList.add('visible');
   }
 
-  // ----- INITIALISATION DE LA CARTE -----
-  function initMap() {
-    const paris = { lat: 48.8566, lng: 2.3522 };
-    map = new google.maps.Map(document.getElementById('map'), {
-      center: paris,
-      zoom: 12,
-      mapTypeId: 'roadmap',
-      mapTypeControl: false,
-      streetViewControl: false,
-      styles: [
-        { featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] }
-      ]
-    });
+  function choisirLieu(lieu) {
+    const lat = parseFloat(lieu.lat);
+    const lon = parseFloat(lieu.lon);
 
-    // Créer les marqueurs
-    createMarkers();
+    carte.setView([lat, lon], 13);
 
-    // Mise à jour du tableau (distance depuis Paris par défaut)
-    updateDistanceTable(paris.lat, paris.lng);
-    originLabelEl.textContent = 'Paris (défaut)';
+    if (marqueurRecherche) carte.removeLayer(marqueurRecherche);
+    marqueurRecherche = L.marker([lat, lon]).addTo(carte)
+      .bindPopup(lieu.display_name.split(',')[0])
+      .openPopup();
 
-    // ----- AUTOCOMPLETE (Google Places) -----
-    const input = document.getElementById('pac-input');
-    autocomplete = new google.maps.places.Autocomplete(input, {
-      types: ['geocode', 'establishment'],
-      fields: ['geometry', 'formatted_address']
-    });
-
-    autocomplete.addListener('place_changed', () => {
-      const place = autocomplete.getPlace();
-      if (!place.geometry || !place.geometry.location) {
-        // fallback : on ne change rien
-        return;
-      }
-      const lat = place.geometry.location.lat();
-      const lng = place.geometry.location.lng();
-      // centrer la carte
-      map.setCenter({ lat, lng });
-      map.setZoom(12);
-
-      // mettre à jour l'origine
-      currentOrigin = { lat, lng };
-      const address = place.formatted_address || 'Lieu sélectionné';
-      originLabelEl.textContent = address;
-
-      // mettre à jour le tableau
-      updateDistanceTable(lat, lng);
-
-      // (optionnel) ajouter un marqueur temporaire ? non demandé.
-    });
-
-    // Gérer la touche "Entrée" sans sélection (pour éviter un comportement étrange)
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-      }
-    });
+    champRecherche.value = lieu.display_name.split(',')[0];
+    listeSuggestions.classList.remove('visible');
   }
 
-  // ----- CHARGEMENT DE LA MAP (callback global) -----
-  // On expose initMap dans l'objet window pour que l'API Google Maps l'appelle
-  window.initMap = initMap;
+  // ===== Écoute de la saisie avec debounce =====
+  champRecherche.addEventListener('input', () => {
+    const valeur = champRecherche.value.trim();
 
-  // (fallback) Si l'API ne charge pas, on affiche un message
-  console.log('✅ Google Maps API chargée via script externe.');
-</script>
+    clearTimeout(delaiRecherche);
 
-<!-- Chargement de l'API Google Maps avec Places -->
-<script async defer
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD7Lm-LYRnXQFMMR-8c9sD1ZjGp5C_nI-M&libraries=places&callback=initMap">
+    if (valeur.length < 3) {
+      listeSuggestions.classList.remove('visible');
+      return;
+    }
+
+    delaiRecherche = setTimeout(async () => {
+      indicateurRecherche.classList.add('visible');
+      try {
+        const resultats = await rechercherLieux(valeur);
+        afficherSuggestions(resultats);
+      } catch (erreur) {
+        listeSuggestions.innerHTML = '<div class="message-suggestion">Erreur lors de la recherche. Réessayez.</div>';
+        listeSuggestions.classList.add('visible');
+      } finally {
+        indicateurRecherche.classList.remove('visible');
+      }
+    }, 400); // délai pour limiter les appels à Nominatim
+  });
+
+  // Fermer les suggestions si on clique ailleurs
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.zone-recherche')) {
+      listeSuggestions.classList.remove('visible');
+    }
+  });
 </script>
 
 </body>
