@@ -3,621 +3,452 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tour du monde · Présentation & Visages du Monde</title>
+  <title>🌍 Hébergements · Carte & Distances</title>
+  <!-- Google Fonts : Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Google Maps JS API (chargée en fin de body) -->
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
     }
 
     body {
-      background: #f5f2e6;
-      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
-      padding: 1.5rem;
-      color: #2e241f;
+      background: #faf3ed;  /* beige chaud */
+      color: #3e2e28;
+      padding: 1rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
     .container {
-      max-width: 1350px;
+      max-width: 1300px;
       margin: 0 auto;
-      background: rgba(255, 250, 245, 0.94);
-      border-radius: 2.5rem;
-      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.1);
-      padding: 2rem;
-      border: 1px solid #d9c8b2;
+      width: 100%;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
     }
 
-    h1 {
-      font-weight: 500;
-      font-size: 2rem;
-      border-bottom: 2px dashed #c7af8c;
-      padding-bottom: 0.7rem;
+    /* ===== EN-TÊTE & CHAMP AUTOCOMPLETE ===== */
+    .search-section {
+      background: #fff9f4;
+      padding: 1.2rem 1.5rem;
+      border-radius: 48px;
+      box-shadow: 0 6px 18px rgba(180, 120, 80, 0.12);
       margin-bottom: 1.8rem;
+      border: 1px solid #f0ded0;
+    }
+
+    .search-section label {
+      display: block;
+      font-weight: 500;
+      font-size: 0.9rem;
+      color: #a67c5c;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.35rem;
+    }
+
+    .autocomplete-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    #pac-input {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      border: 2px solid #ebd7c8;
+      border-radius: 60px;
+      font-size: 1rem;
+      background: #fefcf9;
+      color: #3e2e28;
+      outline: none;
+      transition: border 0.2s, box-shadow 0.2s;
+      font-weight: 400;
+      letter-spacing: 0.3px;
+    }
+
+    #pac-input:focus {
+      border-color: #dbaa7a;
+      box-shadow: 0 0 0 4px rgba(219, 170, 122, 0.2);
+    }
+
+    #pac-input::placeholder {
+      color: #baa08c;
+      font-weight: 300;
+    }
+
+    /* ===== CARTE ===== */
+    #map {
+      width: 100%;
+      height: 55vh;
+      min-height: 400px;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(140, 100, 70, 0.15);
+      border: 1px solid #e6d4c4;
+      margin-bottom: 2rem;
+      background: #ece3da; /* fallback */
+    }
+
+    /* ===== TABLEAU DES DISTANCES ===== */
+    .distances-section {
+      background: #fff9f4;
+      border-radius: 28px;
+      padding: 1.5rem 1.8rem;
+      box-shadow: 0 6px 20px rgba(150, 110, 80, 0.08);
+      border: 1px solid #f0ded0;
+      margin-top: 0.25rem;
+    }
+
+    .distances-section h2 {
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: #6b4d38;
       display: flex;
       align-items: center;
-      gap: 0.8rem;
-      flex-wrap: wrap;
-    }
-
-    h1 span {
-      background: #b48c5c;
-      color: #fff;
-      font-size: 0.9rem;
-      padding: 0.2rem 1.2rem;
-      border-radius: 40px;
-    }
-
-    .subhead {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1.2rem 2rem;
-      margin: -0.5rem 0 1.5rem 0;
-      font-size: 0.9rem;
-      color: #5a4a3a;
-    }
-
-    .subhead strong {
-      color: #3f2e1f;
-    }
-
-    .tabs {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.3rem;
-      margin-bottom: 2rem;
-      border-bottom: 2px solid #e5d5bc;
-      padding-bottom: 0.2rem;
-    }
-
-    .tab-btn {
-      background: #ede3d3;
-      border: none;
-      padding: 0.7rem 1.3rem;
-      font-weight: 600;
-      border-radius: 30px 30px 0 0;
-      color: #5e4b3a;
-      cursor: pointer;
-      transition: 0.2s;
-      font-size: 0.9rem;
-      white-space: nowrap;
-    }
-
-    .tab-btn.active {
-      background: #b48c5c;
-      color: white;
-      box-shadow: 0 -4px 10px rgba(180, 140, 92, 0.3);
-    }
-
-    .tab-content {
-      display: none;
-      animation: fade 0.35s;
-    }
-
-    .tab-content.active {
-      display: block;
-    }
-
-    @keyframes fade {
-      from {
-        opacity: 0.3;
-      }
-      to {
-        opacity: 1;
-      }
-    }
-
-    .grid-4 {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.5rem;
-      margin: 1.5rem 0;
-    }
-
-    .card {
-      background: #fffdf7;
-      border-radius: 1.8rem;
-      padding: 1.5rem;
-      border: 1px solid #dccdb4;
-    }
-
-    .card h3 {
-      color: #7a5d3e;
+      gap: 10px;
       margin-bottom: 1rem;
     }
 
-    .timeline {
-      list-style: none;
-      font-size: 0.9rem;
+    .distances-section h2 small {
+      font-weight: 400;
+      font-size: 0.75rem;
+      color: #a4846c;
+      background: #f0e4da;
+      padding: 0.2rem 0.9rem;
+      border-radius: 30px;
+      letter-spacing: 0.3px;
     }
 
-    .timeline li {
-      padding-left: 1.2rem;
-      border-left: 3px solid #c8aa7a;
-      margin-bottom: 0.7rem;
+    .table-responsive {
+      overflow-x: auto;
+      border-radius: 18px;
     }
 
-    .badge {
-      background: #e7d7bd;
-      font-size: 0.7rem;
-      padding: 0.2rem 0.7rem;
-      border-radius: 20px;
-      margin-left: 0.3rem;
-    }
-
-    table {
+    #distance-table {
       width: 100%;
       border-collapse: collapse;
-      background: white;
-      border-radius: 1rem;
-      overflow: hidden;
-      margin: 1rem 0;
+      font-size: 0.9rem;
+      min-width: 520px;
     }
 
-    th {
-      background: #b48c5c;
-      color: white;
-      padding: 0.7rem;
+    #distance-table th {
       text-align: left;
+      padding: 0.9rem 0.5rem 0.6rem 0.5rem;
+      font-weight: 600;
+      color: #5c4433;
+      border-bottom: 2px solid #e4d2c2;
+      letter-spacing: 0.3px;
     }
 
-    td,
-    th {
-      padding: 0.7rem 1rem;
-      border-bottom: 1px solid #e2d1b8;
+    #distance-table td {
+      padding: 0.7rem 0.5rem;
+      border-bottom: 1px solid #eee3da;
+      color: #3f3128;
     }
 
-    .highlight {
-      font-weight: 700;
-      color: #7b4b2c;
+    #distance-table tr:last-child td {
+      border-bottom: none;
     }
 
-    .daily-box {
-      background: #f9f3e7;
-      border-radius: 1.5rem;
-      padding: 1.5rem;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 2rem;
-      align-items: center;
-    }
-
-    .big-number {
-      font-size: 2.8rem;
-      font-weight: 700;
-      color: #5b3c22;
-    }
-
-    .idea-card {
-      background: #fdf8f0;
-      border-left: 6px solid #b48c5c;
-      border-radius: 1.5rem;
-      padding: 1.8rem;
-      margin-top: 1rem;
-    }
-
-    .income-badge {
-      background: #5b8c5a;
-      color: white;
+    #distance-table .type-badge {
+      display: inline-block;
       padding: 0.2rem 0.8rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      display: inline-block;
-      margin: 0.3rem 0;
-    }
-
-    hr {
-      border: 0.5px solid #dccdb4;
-      margin: 1.2rem 0;
-    }
-
-    .footer-note {
-      margin-top: 2rem;
-      font-size: 0.8rem;
-      text-align: center;
-      color: #6b5a48;
-    }
-
-    ul {
-      list-style-type: none;
-      padding-left: 0;
-    }
-
-    ul.checklist li::before {
-      content: "✔️ ";
-      color: #b48c5c;
-      font-weight: bold;
-    }
-
-    .two-col {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      margin: 1rem 0;
-    }
-
-    @media (max-width: 720px) {
-      .two-col {
-        grid-template-columns: 1fr;
-      }
-      .container {
-        padding: 1rem;
-      }
-      h1 {
-        font-size: 1.5rem;
-      }
-    }
-
-    .tag {
-      display: inline-block;
-      background: #e7d7bd;
+      border-radius: 40px;
       font-size: 0.7rem;
-      padding: 0.15rem 0.7rem;
-      border-radius: 20px;
-      margin-left: 0.4rem;
+      font-weight: 500;
+      background: #f0e4da;
+      color: #4d3a2c;
+      letter-spacing: 0.3px;
     }
 
-    .visa-status {
-      font-size: 0.75rem;
+    .dist-note {
+      display: inline-block;
+      background: #f7eee7;
       padding: 0.1rem 0.6rem;
-      border-radius: 12px;
-      background: #e0eedd;
-      color: #2a5e2a;
+      border-radius: 30px;
+      font-weight: 500;
+      font-size: 0.8rem;
     }
 
-    .visa-status.warn {
-      background: #f5e8c7;
-      color: #8a6d1b;
+    .dist-avi {
+      color: #7d6452;
+      font-size: 0.75rem;
     }
 
-    .visa-status.danger {
-      background: #f5d7d7;
-      color: #a13d3d;
+    .distance-value {
+      font-weight: 500;
+      color: #a56f4a;
     }
 
-    .alert-box {
-      background: #fef3c7;
-      border-left: 4px solid #f59e0b;
-      padding: 0.8rem 1.2rem;
-      border-radius: 0 12px 12px 0;
-      margin: 1rem 0;
-    }
-
-    .service-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-      margin: 1rem 0;
-    }
-
-    .service-item {
-      background: #f9f3e7;
-      border-radius: 1.2rem;
-      padding: 1rem 1.2rem;
+    .empty-row td {
+      padding: 1.2rem 0.5rem;
       text-align: center;
-      border: 1px solid #dccdb4;
+      color: #a4846c;
+      font-style: italic;
     }
 
-    .service-item h4 {
-      color: #5e4530;
-      margin-bottom: 0.3rem;
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 640px) {
+      body { padding: 0.6rem; }
+      .search-section { padding: 1rem; }
+      #pac-input { padding: 0.8rem 1.2rem; }
+      .distances-section { padding: 1rem; }
+      #map { min-height: 300px; }
     }
 
-    .service-item p {
-      font-size: 0.85rem;
-      color: #5a4a3a;
-    }
-
-    .planning-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-      margin: 1rem 0;
-    }
-    .planning-item {
-      display: flex;
-      flex-wrap: wrap;
-      background: #f9f3e7;
-      border-radius: 1rem;
-      padding: 0.8rem 1.2rem;
-      align-items: baseline;
-      border-left: 4px solid #b48c5c;
-    }
-    .planning-item .mois {
-      font-weight: 700;
-      color: #5e4530;
-      width: 120px;
-      flex-shrink: 0;
-    }
-    .planning-item .taches {
-      flex: 1;
-    }
-    .planning-item .taches ul {
-      list-style: disc;
-      padding-left: 1.2rem;
-      margin: 0.2rem 0;
-    }
-    .planning-item .taches ul li {
-      margin-bottom: 0.2rem;
-    }
-
-    .modele-block {
-      background: #f9f7f2;
-      border-left: 4px solid #b48c5c;
-      padding: 0.8rem 1.2rem;
-      margin: 0.8rem 0;
-      border-radius: 0 6px 6px 0;
-    }
-    .modele-block strong {
-      color: #2d3a2a;
-    }
-
-    .intro-block {
-      background: #f9f7f2;
-      border-left: 4px solid #b29063;
-      padding: 1.5rem 1.8rem;
-      border-radius: 8px;
-      margin: 1.5rem 0;
-      font-size: 1.05rem;
+    /* petites retouches */
+    .text-muted {
+      color: #a4846c;
+      font-weight: 300;
+      font-size: 0.75rem;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>
-      🎭 Tour du monde 10‑15 ans · Artistes & Échanges
-      <span>45 000€ · 6€/jour nourriture</span>
-    </h1>
-    <div class="subhead">
-      <span><strong>Départ :</strong> Bordeaux · Septembre 2027</span>
-      <span><strong>Voyageurs :</strong> F23 &amp; H37</span>
-      <span><strong>Durée :</strong> 10‑15 ans (flexible)</span>
-      <span><strong>Mode :</strong> WWOOF · Workaway · Couchsurfing · Tente</span>
-      <span><strong>Électronique :</strong> déjà acheté · renouvellement en occasion</span>
-    </div>
+<div class="container">
 
-    <div class="tabs">
-      <button class="tab-btn active" id="tab0Btn">🌍 Présentation du voyage</button>
-      <button class="tab-btn" id="tab12Btn">🎙️ Visages du Monde – Interviews</button>
-    </div>
-
-    <!-- ============ TAB 0 : PRÉSENTATION DU VOYAGE ============ -->
-    <div class="tab-content active" id="tab0">
-      <h2 style="color:#5e4530;">🌍 Projet Nomade 2027 – 2037</h2>
-      <p style="font-style:italic; color:#5a4a3a;">Tour du monde en backpack, WWOOF, Workaway, échanges de services – 10 ans d'aventure humaine</p>
-
-      <h3 style="color:#7a5d3e; margin-top:1.5rem;">1. Présentation du projet</h3>
-      <p><strong>Nous sommes un couple :</strong> <strong>Ja</strong> (23 ans) et <strong>JB</strong> (37 ans). Nous avons décidé de quitter Bordeaux en septembre 2027 pour un voyage itinérant d'environ <strong>10 ans</strong>, avec une enveloppe initiale de <strong>45 000 €</strong>. Notre ambition est de parcourir le monde à un rythme lent, en privilégiant les rencontres, l'immersion culturelle et un mode de vie minimaliste.</p>
-      <p>Ce voyage n'est pas une succession de destinations touristiques, mais une <strong>résidence temporaire dans des régions</strong> où nous nous arrêterons plusieurs semaines ou mois. Nous alternerons entre phases d'exploration, de volontariat (WWOOF, Workaway) et de petits boulots rémunérés pour équilibrer notre budget.</p>
-
-      <div class="idea-card" style="border-left-color:#7a5d3e;">
-        <strong>Philosophie :</strong> « Voyager lentement, échanger sincèrement, préserver son corps et son esprit, et laisser le temps aux rencontres de faire le chemin. »
-      </div>
-
-      <h3 style="color:#7a5d3e; margin-top:1.5rem;">2. Itinéraires envisagés – 4 grands modèles</h3>
-      <p>Notre itinéraire est flexible. Nous avons défini quatre grandes familles de parcours, que nous pourrons adapter selon les saisons, les opportunités de travail et nos coups de cœur. Chaque bloc peut être rallongé ou court-circuité.</p>
-
-      <div class="modele-block"><strong>🌲 Grands espaces</strong> – Norvège (8 mois) → Écosse, Irlande (5 mois) → Balkans / Europe Est (24 mois) → Turquie, Géorgie (8 mois) → Asie du Sud‑Est (18 mois) → Asie Est (Japon, Corée, Chine) (10 mois) → Canada, USA (12 mois) → Mexique, AmSud (18 mois) → Océanie (10 mois).</div>
-      <div class="modele-block"><strong>🌞 Étés permanents</strong> – Norvège (avril‑oct) (7 mois) → Écosse, Irlande (4 mois) → Balkans, Europe Est (28 mois) → Turquie, Géorgie (8 mois) → Asie Sud‑Est (16 mois) → Japon, Corée (10 mois) → Amérique Latine (22 mois) → Canada, USA (10 mois) → Océanie (8 mois).</div>
-      <div class="modele-block"><strong>⚓ Viking & Pacifique</strong> – Norvège (hiver) (6 mois) → Écosse, Irlande (4 mois) → Europe Ouest/Est (20 mois) → Turquie, Géorgie (6 mois) → Asie Sud‑Est (14 mois) → Asie Est (10 mois) → Océanie (travail) (12 mois) → Canada (10 mois) → AmSud (16 mois).</div>
-      <div class="modele-block"><strong>🧘 Spiritualité & nature</strong> – Norvège (7 mois) → Écosse, Irlande (5 mois) → Balkans, Europe Est (26 mois) → Turquie, Géorgie (8 mois) → Sous‑continent indien (12 mois) → Asie Sud‑Est (14 mois) → Japon, Corée (10 mois) → Amérique Latine (20 mois) → Océanie (8 mois).</div>
-
-      <h3 style="color:#7a5d3e; margin-top:1.5rem;">3. Mode de vie et d'hébergement</h3>
-      <p>Notre voyage repose sur l'<strong>économie de partage</strong> et la débrouillardise. Nous minimisons les coûts en adoptant les pratiques suivantes :</p>
-      <ul style="list-style:disc; padding-left:1.5rem; line-height:2.2;">
-        <li><strong>Hébergement gratuit</strong> : tente (camping sauvage autorisé en Norvège, Écosse, Balkans, Canada…), Couchsurfing, hébergement chez l'habitant (via bouche-à-oreille ou rencontres), et échanges de services contre le gîte.</li>
-        <li><strong>Volontariat</strong> : WWOOF (fermes biologiques), Workaway, HelpX – quelques heures de travail par jour en échange du repas et du logement.</li>
-        <li><strong>Transports</strong> : auto‑stop, bus locaux, trains de nuit, covoiturage, et rares vols low‑cost pour les grandes traversées.</li>
-        <li><strong>Alimentation</strong> : cuisine maison avec des produits locaux, marchés de fin de journée, cueillette sauvage, et échanges de repas contre des services.</li>
-      </ul>
-      <p>Cette approche nous permet de vivre avec <strong>environ 6 € par jour et par personne</strong> pour la nourriture, et de réduire presque à zéro les frais d'hébergement.</p>
-
-      <h3 style="color:#7a5d3e; margin-top:1.5rem;">4. Budget et équilibre financier</h3>
-      <p>Notre capital de départ est de <strong>45 000 €</strong>. Nous avons modélisé les dépenses sur 10 ans (et une projection sur 15 ans) en tenant compte des frais incompressibles et des revenus potentiels.</p>
-
-      <h4 style="color:#5e4530; margin-top:1rem;">4.1 Dépenses estimées sur 10 ans (pour deux personnes)</h4>
-      <table>
-        <thead><tr><th>Poste</th><th>Coût mensuel</th><th>Total 10 ans</th></tr></thead>
-        <tbody>
-          <tr><td>Assurances voyage (SafetyWing / Chapka)</td><td>110 €</td><td>13 200 €</td></tr>
-          <tr><td>Nourriture (6 €/jour/pers)</td><td>180 €</td><td>21 600 €</td></tr>
-          <tr><td>Transports (bus, stop, vols occasionnels)</td><td>70 €</td><td>8 400 €</td></tr>
-          <tr><td>Visas, formalités</td><td>15 €</td><td>1 800 €</td></tr>
-          <tr><td>Téléphonie (eSIM + forfait FR)</td><td>10 €</td><td>1 200 €</td></tr>
-          <tr><td>Matériel (renouvellement occasion)</td><td>5 €</td><td>600 €</td></tr>
-          <tr style="background:#f7efe2;"><td><strong>TOTAL DÉPENSES</strong></td><td><strong>390 €</strong></td><td><strong>46 800 €</strong></td></tr>
-        </tbody>
-      </table>
-
-      <h4 style="color:#5e4530; margin-top:1rem;">4.2 Revenus potentiels</h4>
-      <ul style="list-style:disc; padding-left:1.5rem; line-height:2.2;">
-        <li><strong>Travail saisonnier en Norvège</strong> (hôtellerie, fermes, pêche) : environ 2 200 – 2 800 €/mois nets par personne. Une saison de 4 mois pour deux peut rapporter <strong>15 000 – 20 000 €</strong> nets.</li>
-        <li><strong>Enseignement du français</strong> en Asie de l'Est (Japon, Corée, Chine) : 800 – 1 500 €/mois par personne.</li>
-        <li><strong>Spectacles de rue et contes</strong> : 50 – 300 €/semaine selon les lieux.</li>
-        <li><strong>Services (affûtage, dépannage, bricolage, cours de cuisine)</strong> : 100 – 400 €/mois.</li>
-        <li><strong>WHV pour Ja</strong> en Australie, Nouvelle‑Zélande, Canada (jusqu'à 35 ans) : travail en ferme ou en ville.</li>
-      </ul>
-      <p>En combinant ces sources, nous estimons pouvoir générer <strong>5 000 à 18 000 € par an</strong>, ce qui couvre largement l'écart entre nos dépenses et notre capital initial. Le modèle est donc <strong>viable et même excédentaire</strong> si nous travaillons régulièrement.</p>
-
-      <div class="alert-box"><strong>Règle d'or :</strong> Nous conservons toujours un fonds d'urgence de <strong>3 000 €</strong> intouchable, pour faire face à un imprévu (rapatriement, soin, vol).</div>
-
-      <h3 style="color:#7a5d3e; margin-top:1.5rem;">5. Échanges de services et de savoirs</h3>
-      <p>Pour réduire les dépenses et créer du lien, nous proposons nos compétences contre nourriture, hébergement ou petit argent :</p>
-      <ul style="list-style:disc; padding-left:1.5rem; line-height:2.2;">
-        <li><strong>Affûtage de couteaux</strong> (avec pierres à eau) – très apprécié dans les communautés rurales.</li>
-        <li><strong>Dépannage informatique / téléphone</strong> (nettoyage, réinstallation, récupération de données).</li>
-        <li><strong>Petits travaux de bricolage</strong> (réparations, entretien, montage).</li>
-        <li><strong>Contes et récits de mythologie viking</strong> – une soirée d'échange culturel.</li>
-        <li><strong>Cours de cuisine française</strong> (crêpes, quiche, ratatouille).</li>
-        <li><strong>Cours de français / anglais</strong> (conversation, soutien scolaire).</li>
-      </ul>
-
-      <h3 style="color:#7a5d3e; margin-top:1.5rem;">6. Logistique, santé et assurances</h3>
-      <ul style="list-style:disc; padding-left:1.5rem; line-height:2.2;">
-        <li><strong>Assurances</strong> : nous souscrivons une assurance voyage longue durée (SafetyWing, Chapka ou ACS) couvrant les soins, le rapatriement et la responsabilité civile. Coût environ 110 €/mois pour le couple.</li>
-        <li><strong>Vaccinations</strong> : rappels, hépatites A/B, typhoïde, fièvre jaune, rage, encéphalite japonaise selon les zones. Bilan dentaire complet avant départ.</li>
-        <li><strong>Trousse médicale</strong> : antibiotiques large spectre, antipaludéens, désinfectants, pansements, et médicaments en DCI (nom générique).</li>
-        <li><strong>Téléphonie</strong> : forfait Free à 2 €/mois pour garder le numéro français (SMS de validation bancaire), eSIM locales pour la data (Airalo, Ubigi).</li>
-        <li><strong>Banque</strong> : compte Revolut et Wise pour les retraits sans frais, et un compte français (Crédit Agricole ou autre) avec une adresse de domiciliation en France.</li>
-        <li><strong>Administratif</strong> : passeports valides 18 mois après le départ, procuration notariée, déclaration fiscale maintenue en France, et veille sur les droits CPAM.</li>
-      </ul>
-
-      <h3 style="color:#7a5d3e; margin-top:1.5rem;">7. Vie de couple et résilience</h3>
-      <ul style="list-style:disc; padding-left:1.5rem; line-height:2.2;">
-        <li><strong>Espaces individuels</strong> : nous nous accordons des journées « solo » régulières pour explorer ou se reposer séparément.</li>
-        <li><strong>Prise de décision</strong> : nous alternons la responsabilité des choix quotidiens (itinéraire, hébergement).</li>
-        <li><strong>Gestion du stress</strong> : revue budgétaire mensuelle commune, et possibilité de « pause confort » (hôtel) si la fatigue s'accumule.</li>
-        <li><strong>Évolution des envies</strong> (âge, maternité éventuelle, ambitions professionnelles) – nous nous engageons à <strong>réévaluer notre projet chaque année</strong> et à nous adapter.</li>
-        <li><strong>Réseau social</strong> : nous investissons dans les communautés locales (clubs, cours, bénévolat) pour ne pas rester en vase clos.</li>
-      </ul>
-
-      <h3 style="color:#7a5d3e; margin-top:1.5rem;">8. Équipement et préparation physique</h3>
-      <ul style="list-style:disc; padding-left:1.5rem; line-height:2.2;">
-        <li><strong>Sacs</strong> : Osprey 50‑65 L + daypack 20 L.</li>
-        <li><strong>Tente</strong> : 4 saisons, légère (MSR ou Hilleberg).</li>
-        <li><strong>Sac de couchage</strong> : -10°C + liner soie.</li>
-        <li><strong>Bâtons de marche</strong> – indispensables pour protéger les articulations.</li>
-        <li><strong>Purification d'eau</strong> : filtre Sawyer + UV‑C LARQ + pastilles.</li>
-        <li><strong>Électronique</strong> (déjà acheté) : 1 laptop, 2 téléphones, batterie solaire, câbles, multitool.</li>
-        <li><strong>Vêtements</strong> : système layering (laine mérinos, polaire, Gore‑Tex) – renouvellement en occasion.</li>
-      </ul>
-
-      <h3 style="color:#7a5d3e; margin-top:1.5rem;">9. Points de vigilance et réalisme</h3>
-      <ul style="list-style:disc; padding-left:1.5rem; line-height:2.2;">
-        <li><strong>Visas</strong> : les WHV pour Ja sont possibles jusqu'à 35 ans (Australie, NZ, Canada) mais pas pour JB (37 ans). Nous anticiperons les visas touristes ou les extensions.</li>
-        <li><strong>Couverture santé</strong> : hors Europe, l'assurance voyage est essentielle. Nous vérifions les clauses de rapatriement et les plafonds.</li>
-        <li><strong>Lassitude</strong> : le « syndrome du temple bouddhiste » est réel. Notre remède est la <strong>lenteur</strong> : s'installer plusieurs mois dans un lieu qui nous plaît, y tisser des liens.</li>
-        <li><strong>Rentrée</strong> : même si nous ne prévoyons pas de retour avant 10 ans, nous documentons notre expérience (blog, compétences) pour faciliter une réinsertion professionnelle.</li>
-        <li><strong>Retraite</strong> : JB cotisera volontairement à la CFE (900 €/an) pour ne pas perdre de trimestres.</li>
-      </ul>
-
-      <div class="idea-card" style="border-left-color:#5b8c5a; margin-top:1.5rem;">
-        <h4 style="color:#5e4530;">10. Conclusion : une aventure humaine et responsable</h4>
-        <p>Ce voyage est bien plus qu'un tour du monde : c'est un <strong>projet de vie</strong> fondé sur la confiance en l'autre, la débrouillardise et l'ouverture au monde. Ja et JB croient que l'on peut voyager longtemps avec un budget modeste en misant sur l'échange, le partage et la simplicité.</p>
-        <p>Les 45 000 € initiaux, combinés à nos activités rémunérées et à nos économies quotidiennes, nous permettront de <strong>vivre pleinement cette décennie d'exploration</strong> sans stress financier excessif. Nous sommes conscients des défis (logistiques, relationnels, sanitaires) mais nous les avons anticipés avec soin.</p>
-        <p style="margin-top:0.8rem;">Nous emportons avec nous notre curiosité, notre énergie et notre envie de <strong>rencontrer l'autre</strong>. Et si la route nous mène ailleurs que prévu, nous nous adapterons – car la beauté du voyage est aussi dans ses imprévus.</p>
-        <p style="margin-top:1rem; text-align:right; font-style:italic; color:#5a4a3a;">Bordeaux, septembre 2027<br><strong>Ja &amp; JB</strong></p>
-      </div>
-    </div>
-
-    <!-- ============ TAB 12 : VISAGES DU MONDE – INTERVIEWS ============ -->
-    <div class="tab-content" id="tab12">
-      <div style="text-align:center; margin-bottom:2rem; border-bottom:2px solid #d9c2a0; padding-bottom:1.5rem;">
-        <h2 style="font-family:'Playfair Display',serif; font-size:2.5rem; color:#2e3b2c; border:none; padding:0;">Visages du Monde</h2>
-        <p style="font-size:1.2rem; font-style:italic; color:#5b6e4d;">Projet d'immersion, de rencontres & d'interviews</p>
-        <p style="color:#6b6256; margin-top:0.5rem;"><strong>2027 – 2037</strong> · Départ de Bordeaux · Septembre 2027</p>
-      </div>
-
-      <div class="intro-block">
-        <p><strong>Visages du Monde</strong> est un voyage de dix ans à travers une trentaine de pays, mené par un couple de 23 et 37 ans au départ. Leur ambition : comprendre de l'intérieur les cultures qu'ils traversent en allant à la rencontre de citoyens ordinaires et en recueillant, dans leur langue maternelle, leur vision de la vie, du bonheur, de leur pays et de leur culture.</p>
-        <p style="margin-bottom:0;">Le projet donnera naissance à un livre d'analyse personnelle, assumé comme subjectif, et à une archive audiovisuelle de centaines d'entretiens.</p>
-      </div>
-
-      <h3 style="color:#7a5d3e; margin-top:1.5rem;">1. Pourquoi ce voyage ?</h3>
-      <p>Nous souhaitons renouer avec une compréhension incarnée du monde, loin des écrans et des clichés. Nous ne voulons pas « visiter » des pays, mais habiter des moments avec celles et ceux qui y vivent. Chaque personne, quel que soit son âge ou son origine, porte un fragment de vérité sur sa société. En écoutant ces voix du quotidien – l'étudiant, la retraitée, l'artisan – nous tisserons une mosaïque subjective des manières d'être au monde.</p>
-      <p>Ce projet est profondément personnel : il s'agit d'abord de notre propre compréhension du monde. Le livre qui en résultera ne prétendra pas à l'objectivité scientifique, mais offrira un récit honnête, sensible et incarné.</p>
-
-      <h3 style="color:#7a5d3e; margin-top:1.5rem;">2. Nos objectifs</h3>
-
-      <h4 style="color:#5e4530;">2.1 Immersion culturelle profonde</h4>
-      <p>Passer plusieurs semaines ou mois dans une même région, partager le quotidien de familles, travailler avec elles, apprendre les bases de la langue. Cela ouvre des portes que le passage éclair ne peut entrouvrir.</p>
-
-      <h4 style="color:#5e4530;">2.2 Collecte de témoignages bruts</h4>
-      <p>Dans chaque pays, nous interviewerons des habitants avec une grille de questions constante, présentée à l'avance dans leur langue. Les thèmes abordés incluent :</p>
-      <ul style="list-style:disc; padding-left:1.5rem; line-height:2.2;">
-        <li>Ce qu'ils aiment dans leur pays, et ce qui les dérange</li>
-        <li>Leur définition du bonheur</li>
-        <li>Leurs valeurs fondamentales</li>
-        <li>Un souvenir ou une anecdote qui les fait rire</li>
-        <li>Leur perception de l'avenir de leur société</li>
-      </ul>
-      <p>Les entretiens seront menés dans la langue maternelle de la personne, avec notre effort sincère pour poser les questions dans cette langue. Une assistance écrite (traduction) pourra être utilisée ponctuellement.</p>
-
-      <h4 style="color:#5e4530;">2.3 Un livre d'analyse personnelle</h4>
-      <p>Ce livre ne sera ni un guide ni une étude anthropologique. Il racontera notre cheminement, pays par pays, à travers des portraits et nos réflexions. L'écriture se fera au fil du voyage, avec des pauses de relecture lors de nos retours annuels en France.</p>
-
-      <h4 style="color:#5e4530;">2.4 Archives audiovisuelles</h4>
-      <p>Nous filmerons les interviews (plan fixe sur la personne, parfois nos réactions). Ces centaines d'heures, dans des dizaines de langues, constitueront une mémoire vivante, exploitable ultérieurement pour un documentaire ou pour nous-mêmes.</p>
-
-      <h3 style="color:#7a5d3e; margin-top:1.5rem;">3. Itinéraires envisagés – 4 grands modèles</h3>
-      <p>Notre itinéraire est flexible. Nous avons défini quatre grandes familles de parcours, que nous pourrons adapter selon les saisons, les opportunités et nos envies. Chaque bloc peut être rallongé ou court-circuité.</p>
-
-      <div class="modele-block"><strong>🌲 Grands espaces</strong> – Norvège (8 mois) → Écosse, Irlande (5 mois) → Balkans / Europe Est (24 mois) → Turquie, Géorgie (8 mois) → Asie du Sud‑Est (18 mois) → Asie Est (Japon, Corée, Chine) (10 mois) → Canada, USA (12 mois) → Mexique, AmSud (18 mois) → Océanie (10 mois).</div>
-      <div class="modele-block"><strong>🌞 Étés permanents</strong> – Norvège (avril‑oct) (7 mois) → Écosse, Irlande (4 mois) → Balkans, Europe Est (28 mois) → Turquie, Géorgie (8 mois) → Asie Sud‑Est (16 mois) → Japon, Corée (10 mois) → Amérique Latine (22 mois) → Canada, USA (10 mois) → Océanie (8 mois).</div>
-      <div class="modele-block"><strong>⚓ Viking & Pacifique</strong> – Norvège (hiver) (6 mois) → Écosse, Irlande (4 mois) → Europe Ouest/Est (20 mois) → Turquie, Géorgie (6 mois) → Asie Sud‑Est (14 mois) → Asie Est (10 mois) → Océanie (travail) (12 mois) → Canada (10 mois) → AmSud (16 mois).</div>
-      <div class="modele-block"><strong>🧘 Spiritualité & nature</strong> – Norvège (7 mois) → Écosse, Irlande (5 mois) → Balkans, Europe Est (26 mois) → Turquie, Géorgie (8 mois) → Sous‑continent indien (12 mois) → Asie Sud‑Est (14 mois) → Japon, Corée (10 mois) → Amérique Latine (20 mois) → Océanie (8 mois).</div>
-
-      <h3 style="color:#7a5d3e; margin-top:1.5rem;">4. Méthodologie des interviews</h3>
-      <div class="two-col">
-        <div class="card"><h4>🔍 Recrutement</h4><p>Via nos hôtes, des rencontres spontanées, des recommandations locales. Nous privilégierons des volontaires de tout âge (18-90 ans).</p></div>
-        <div class="card"><h4>📋 Préparation</h4><p>La grille de questions est traduite et remise quelques jours avant, pour une parole réfléchie.</p></div>
-        <div class="card"><h4>🎤 Déroulement</h4><p>Nous posons les questions dans la langue locale (ou avec aide écrite). La personne répond librement, sans interruption.</p></div>
-        <div class="card"><h4>📹 Enregistrement</h4><p>Caméra fixe sur le visage, micro-cravate. Nos réactions peuvent être filmées en plan secondaire.</p></div>
-        <div class="card"><h4>📝 Transcription</h4><p>Outils automatiques, puis vérification par des locuteurs natifs pour les passages analysés.</p></div>
-        <div class="card"><h4>🌐 Langue</h4><p>L'entretien se déroule intégralement dans la langue maternelle de l'interviewé. Nous suivons grâce à une préparation et des outils discrets.</p></div>
-      </div>
-
-      <h3 style="color:#7a5d3e; margin-top:1.5rem;">5. Atouts et forces du projet</h3>
-      <div class="highlight" style="background:#f3efe7; border-radius:10px; padding:1rem 1.5rem; margin:0.5rem 0;"><strong>⏳ Une temporalité rare</strong> – Dix années permettent de sortir de l'urgence et d'absorber les climats, les saisons, les rythmes sociaux.</div>
-      <div class="highlight" style="background:#f3efe7; border-radius:10px; padding:1rem 1.5rem; margin:0.5rem 0;"><strong>👫 Un couple complémentaire</strong> – L'écart d'âge (14 ans) offre deux regards générationnels qui se nourrissent mutuellement.</div>
-      <div class="highlight" style="background:#f3efe7; border-radius:10px; padding:1rem 1.5rem; margin:0.5rem 0;"><strong>🗣️ L'effort linguistique</strong> – Même quelques mots transforment la rencontre et montrent un respect profond.</div>
-      <div class="highlight" style="background:#f3efe7; border-radius:10px; padding:1rem 1.5rem; margin:0.5rem 0;"><strong>📖 Une analyse subjective assumée</strong> – En renonçant à toute prétention objective, nous gagnons en honnêteté et en liberté.</div>
-      <div class="highlight" style="background:#f3efe7; border-radius:10px; padding:1rem 1.5rem; margin:0.5rem 0;"><strong>🇫🇷 Des racines préservées</strong> – Le retour annuel en France maintient l'équilibre mental et permet un travail d'écriture suivi.</div>
-
-      <h3 style="color:#7a5d3e; margin-top:1.5rem;">6. Défis et réponses réalistes</h3>
-      <h4 style="color:#5e4530;">6.1 Fatigue du voyage perpétuel</h4>
-      <p>Nous prévoyons des périodes « blanches » sans objectif, et le retour annuel en France. La communication dans le couple sera la priorité absolue.</p>
-      <h4 style="color:#5e4530;">6.2 Barrière linguistique</h4>
-      <p>Nous ne comprendrons pas tout, et nous le savons. Nous ne surinterpréterons jamais un témoignage sans vérification par un locuteur natif. Les limites de notre compréhension seront mentionnées dans le livre.</p>
-      <h4 style="color:#5e4530;">6.3 Épreuve du couple sur la durée</h4>
-      <p>Dix ans de vie nomade peuvent user une relation. Nous prévoyons des moments de solitude choisis, des consultations de proches à distance, et la possibilité de faire une pause plus longue si nécessaire. Le projet doit nous grandir, pas nous détruire.</p>
-      <h4 style="color:#5e4530;">6.4 Gestion des données</h4>
-      <p>Sauvegardes redondantes (disques durs, cloud), et rituels de tri lors des retours en France. Le livre s'écrira par fragments, pas d'un seul bloc à la fin.</p>
-      <h4 style="color:#5e4530;">6.5 Viabilité financière</h4>
-      <p>Budget minimaliste avec une réserve d'urgence. Les pays à coût de vie modéré équilibreront les zones plus chères. Nous resterons ouverts à de petits travaux ponctuels.</p>
-
-      <h3 style="color:#7a5d3e; margin-top:1.5rem;">7. Résultats attendus</h3>
-      <ul style="list-style:disc; padding-left:1.5rem; line-height:2.2;">
-        <li><strong>Un livre</strong> de 300-400 pages, structuré par pays ou par thèmes, publié en auto-édition ou via une maison d'édition.</li>
-        <li><strong>Une archive audiovisuelle</strong> de plusieurs centaines d'heures, pouvant donner lieu à un documentaire.</li>
-        <li><strong>Une transformation personnelle</strong>, un regard plus humble et plus joyeux sur le monde.</li>
-      </ul>
-
-      <div style="font-family:'Playfair Display',serif; font-style:italic; font-size:1.25rem; text-align:center; color:#5b4e3c; margin:2rem 0;">
-        « Chaque visage est un pays. Chaque voix est une frontière qui tombe. »
-      </div>
-
-      <h3 style="color:#7a5d3e; margin-top:1.5rem;">8. Conclusion</h3>
-      <p><strong>Visages du Monde</strong> est un projet déraisonnable par son ampleur, mais profondément réfléchi dans sa préparation. Nous ne partons pas pour fuir, mais pour comprendre. Nous ne cherchons pas à accumuler des pays, mais à récolter des regards. Ce chemin de dix ans nous changera autant que le livre que nous en tirerons.</p>
-      <p style="text-align:center; margin-top:1.5rem; font-style:italic; color:#5a4a3a;">Départ : septembre 2027. D'ici là, nous préparons nos sacs, nos esprits, et notre premier « Hei » maladroit pour la Norvège.</p>
-    </div>
-
-    <div class="footer-note">
-      🎭 Bordeaux · Septembre 2027 · 10‑15 ans · 45 000€ · 6€/jour · Artistes, échanges de services, savoirs & mythologie viking
+  <!-- CHAMP AUTOCOMPLETE -->
+  <div class="search-section">
+    <label for="pac-input">📍 Choisissez une ville ou une adresse</label>
+    <div class="autocomplete-wrapper">
+      <input id="pac-input" type="text" placeholder="Recherchez une ville, une adresse..." />
     </div>
   </div>
 
-  <script>
-    (() => {
-      const tabs = document.querySelectorAll('.tab-btn');
-      const contents = document.querySelectorAll('.tab-content');
-      const mapping = {
-        tab0Btn: 'tab0',
-        tab12Btn: 'tab12'
+  <!-- CARTE -->
+  <div id="map"></div>
+
+  <!-- TABLEAU DES DISTANCES -->
+  <div class="distances-section">
+    <h2>
+      🚗 Distances depuis le lieu sélectionné
+      <small id="origin-label">Paris (défaut)</small>
+    </h2>
+    <div class="table-responsive">
+      <table id="distance-table">
+        <thead>
+          <tr>
+            <th>Hébergement</th>
+            <th>Type</th>
+            <th>Note</th>
+            <th>Distance (km)</th>
+          </tr>
+        </thead>
+        <tbody id="distance-body">
+          <!-- Rempli par JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- Google Maps API + JS intégré                                 -->
+<!-- ============================================================ -->
+<script>
+  // ----- DONNÉES SIMULÉES (exactement selon cahier des charges) -----
+  const hebergements = [
+    { nom: "Chez Marie", type: "Couchsurfing", contact: "marie@example.com", lat: 48.8566, lng: 2.3522, note: 4.5, avis: 23 },
+    { nom: "Ferme Bio Valérie", type: "Wwoofing", contact: "valerie@fermebio.fr", lat: 48.8600, lng: 2.3400, note: 4.8, avis: 41 },
+    { nom: "Auberge du Voyageur", type: "Couchsurfing", contact: "auberge@example.com", lat: 48.8700, lng: 2.3600, note: 4.2, avis: 17 },
+    { nom: "Jardin Partagé HelpX", type: "HelpX", contact: "helpx@jardin.fr", lat: 48.8500, lng: 2.3700, note: 4.6, avis: 34 },
+    { nom: "Loft Urbain Gratuit", type: "Couchsurfing", contact: "loft@urbain.fr", lat: 48.8450, lng: 2.3300, note: 3.9, avis: 12 },
+    { nom: "Ferme Pédagogique", type: "Wwoofing", contact: "pedago@ferme.fr", lat: 48.8300, lng: 2.4000, note: 4.7, avis: 56 },
+    { nom: "Studio Échange Maison", type: "HomeExchange", contact: "studio@echange.fr", lat: 48.8800, lng: 2.3200, note: 4.3, avis: 29 },
+    { nom: "Yourte Couchsurfing", type: "Couchsurfing", contact: "yourte@nature.fr", lat: 48.8400, lng: 2.4200, note: 4.1, avis: 19 },
+    { nom: "Potager Collectif", type: "Wwoofing", contact: "potager@collectif.org", lat: 48.8200, lng: 2.3500, note: 4.9, avis: 62 },
+    { nom: "Appart'Artiste", type: "HelpX", contact: "art@helpx.fr", lat: 48.8650, lng: 2.3800, note: 4.0, avis: 8 }
+  ];
+
+  // ----- COULEURS PAR TYPE -----
+  const typeColors = {
+    'Couchsurfing': '#3182ce', // bleu
+    'Wwoofing': '#38a169',     // vert
+    'HelpX': '#dd6b20',        // orange
+    'HomeExchange': '#e53e3e', // rouge (Autre)
+    'default': '#e53e3e'
+  };
+
+  // ----- VARIABLES GLOBALES -----
+  let map;
+  let markers = [];
+  let infoWindow = null;
+  let autocomplete;
+  let currentOrigin = { lat: 48.8566, lng: 2.3522 }; // Paris par défaut
+  let originLabel = 'Paris (défaut)';
+
+  // ----- ÉLÉMENTS DOM -----
+  const distanceBody = document.getElementById('distance-body');
+  const originLabelEl = document.getElementById('origin-label');
+
+  // ----- FONCTIONS UTILITAIRES -----
+  function getColorForType(type) {
+    return typeColors[type] || typeColors.default;
+  }
+
+  // Calcul de distance (Haversine) en km entre deux points
+  function haversineDistance(lat1, lng1, lat2, lng2) {
+    const R = 6371;
+    const toRad = (deg) => (deg * Math.PI) / 180;
+    const dLat = toRad(lat2 - lat1);
+    const dLng = toRad(lng2 - lng1);
+    const a = Math.sin(dLat/2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng/2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+
+  // ----- METTRE À JOUR LE TABLEAU DES DISTANCES -----
+  function updateDistanceTable(originLat, originLng) {
+    const rows = hebergements.map(h => {
+      const dist = haversineDistance(originLat, originLng, h.lat, h.lng);
+      return { ...h, distance: dist };
+    });
+    // tri par distance croissante
+    rows.sort((a, b) => a.distance - b.distance);
+
+    // construction du HTML
+    let html = '';
+    if (rows.length === 0) {
+      html = `<tr class="empty-row"><td colspan="4">Aucun hébergement trouvé</td></tr>`;
+    } else {
+      rows.forEach(h => {
+        const noteStr = h.note.toFixed(1);
+        html += `<tr>
+          <td><strong>${h.nom}</strong></td>
+          <td><span class="type-badge" style="background:${getColorForType(h.type)}20; color:${getColorForType(h.type)};">${h.type}</span></td>
+          <td><span class="dist-note">⭐ ${noteStr}</span> <span class="dist-avi">(${h.avis} avis)</span></td>
+          <td class="distance-value">${h.distance.toFixed(1)} km</td>
+        </tr>`;
+      });
+    }
+    distanceBody.innerHTML = html;
+  }
+
+  // ----- CRÉER LES MARQUEURS (avec InfoWindow) -----
+  function createMarkers() {
+    // supprimer les anciens marqueurs
+    markers.forEach(m => m.setMap(null));
+    markers = [];
+
+    hebergements.forEach(h => {
+      const color = getColorForType(h.type);
+      const icon = {
+        path: 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z',
+        fillColor: color,
+        fillOpacity: 1,
+        strokeWeight: 1.2,
+        strokeColor: '#ffffff',
+        scale: 1.2,
+        anchor: new google.maps.Point(12, 20)
       };
 
-      tabs.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const id = e.currentTarget.id;
-          tabs.forEach(b => b.classList.remove('active'));
-          e.currentTarget.classList.add('active');
-          contents.forEach(c => c.classList.remove('active'));
-          if (mapping[id]) {
-            document.getElementById(mapping[id]).classList.add('active');
-          }
-        });
+      const marker = new google.maps.Marker({
+        position: { lat: h.lat, lng: h.lng },
+        map: map,
+        icon: icon,
+        title: h.nom,
+        animation: google.maps.Animation.DROP
       });
-    })();
-  </script>
+
+      // InfoWindow
+      marker.addListener('click', () => {
+        const content = `
+          <div style="font-family:Poppins, sans-serif; padding:4px 2px; max-width:220px; color:#3e2e28;">
+            <div style="font-weight:600; font-size:1.05rem;">${h.nom}</div>
+            <div style="display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 4px;">
+              <span style="background:${getColorForType(h.type)}20; padding:0 10px; border-radius:40px; font-size:0.7rem; color:${getColorForType(h.type)};">${h.type}</span>
+              <span style="color:#7d6452; font-size:0.75rem;">✉️ ${h.contact}</span>
+            </div>
+            <div style="margin-top:4px;">
+              <span style="font-weight:500;">⭐ ${h.note.toFixed(1)}</span>
+              <span style="color:#7d6452; font-size:0.75rem; margin-left:6px;">(${h.avis} avis)</span>
+            </div>
+          </div>
+        `;
+        if (infoWindow) infoWindow.close();
+        infoWindow = new google.maps.InfoWindow({ content });
+        infoWindow.open(map, marker);
+      });
+
+      markers.push(marker);
+    });
+  }
+
+  // ----- INITIALISATION DE LA CARTE -----
+  function initMap() {
+    const paris = { lat: 48.8566, lng: 2.3522 };
+    map = new google.maps.Map(document.getElementById('map'), {
+      center: paris,
+      zoom: 12,
+      mapTypeId: 'roadmap',
+      mapTypeControl: false,
+      streetViewControl: false,
+      styles: [
+        { featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] }
+      ]
+    });
+
+    // Créer les marqueurs
+    createMarkers();
+
+    // Mise à jour du tableau (distance depuis Paris par défaut)
+    updateDistanceTable(paris.lat, paris.lng);
+    originLabelEl.textContent = 'Paris (défaut)';
+
+    // ----- AUTOCOMPLETE (Google Places) -----
+    const input = document.getElementById('pac-input');
+    autocomplete = new google.maps.places.Autocomplete(input, {
+      types: ['geocode', 'establishment'],
+      fields: ['geometry', 'formatted_address']
+    });
+
+    autocomplete.addListener('place_changed', () => {
+      const place = autocomplete.getPlace();
+      if (!place.geometry || !place.geometry.location) {
+        // fallback : on ne change rien
+        return;
+      }
+      const lat = place.geometry.location.lat();
+      const lng = place.geometry.location.lng();
+      // centrer la carte
+      map.setCenter({ lat, lng });
+      map.setZoom(12);
+
+      // mettre à jour l'origine
+      currentOrigin = { lat, lng };
+      const address = place.formatted_address || 'Lieu sélectionné';
+      originLabelEl.textContent = address;
+
+      // mettre à jour le tableau
+      updateDistanceTable(lat, lng);
+
+      // (optionnel) ajouter un marqueur temporaire ? non demandé.
+    });
+
+    // Gérer la touche "Entrée" sans sélection (pour éviter un comportement étrange)
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+      }
+    });
+  }
+
+  // ----- CHARGEMENT DE LA MAP (callback global) -----
+  // On expose initMap dans l'objet window pour que l'API Google Maps l'appelle
+  window.initMap = initMap;
+
+  // (fallback) Si l'API ne charge pas, on affiche un message
+  console.log('✅ Google Maps API chargée via script externe.');
+</script>
+
+<!-- Chargement de l'API Google Maps avec Places -->
+<script async defer
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD7Lm-LYRnXQFMMR-8c9sD1ZjGp5C_nI-M&libraries=places&callback=initMap">
+</script>
+
 </body>
 </html>
