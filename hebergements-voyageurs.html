@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Escales — Hébergements de voyageurs</title>
+
+<!-- Leaflet CSS via cdnjs -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+
+<!-- Polices -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  /* ===== Jetons de design ===== */
+  :root {
+    --fond: #F2EFE6;
+    --fond-carte: #E8E4D6;
+    --encre: #1B2E28;
+    --encre-clair: #4A5C55;
+    --accent: #C79A3D;
+    --accent-fonce: #9C7526;
+    --sauge: #3D6B5C;
+    --bordure: #D9D3C3;
+    --blanc: #FFFFFF;
+    --erreur: #A6432F;
+
+    --police-titre: 'Space Grotesk', sans-serif;
+    --police-texte: 'Work Sans', sans-serif;
+    --police-donnee: 'IBM Plex Mono', monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--fond);
+    color: var(--encre);
+    font-family: var(--police-texte);
+  }
+
+  /* ===== En-tête ===== */
+  header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--bordure);
+  }
+
+  /* Tampon "postmark" — élément signature de l'identité visuelle */
+  .tampon {
+    flex-shrink: 0;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: 2px dashed var(--accent-fonce);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(-8deg);
+    font-family: var(--police-titre);
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--accent-fonce);
+    background: var(--blanc);
+  }
+
+  .titre-app h1 {
+    font-family: var(--police-titre);
+    font-weight: 700;
+    font-size: 20px;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  .titre-app p {
+    margin: 2px 0 0;
+    font-size: 13px;
+    color: var(--encre-clair);
+  }
+
+  /* ===== Zone de recherche ===== */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 18px 20px 32px;
+  }
+
+  .zone-recherche {
+    position: relative;
+    margin-bottom: 18px;
+  }
+
+  label.libelle-recherche {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--encre-clair);
+    margin-bottom: 6px;
+  }
+
+  #champ-recherche {
+    width: 100%;
+    padding: 13px 44px 13px 14px;
+    font-size: 16px;
+    font-family: var(--police-texte);
+    border: 1.5px solid var(--bordure);
+    border-radius: 10px;
+    background: var(--blanc);
+    color: var(--encre);
+    outline: none;
+    transition: border-color 0.15s ease;
+  }
+
+  #champ-recherche:focus {
+    border-color: var(--accent);
+  }
+
+  .indicateur-recherche {
+    position: absolute;
+    right: 14px;
+    top: 38px;
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--bordure);
+    border-top-color: var(--accent-fonce);
+    border-radius: 50%;
+    animation: tourner 0.7s linear infinite;
+    display: none;
+  }
+
+  .indicateur-recherche.visible { display: block; }
+
+  @keyframes tourner {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Liste de suggestions */
+  .liste-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 4px;
+    background: var(--blanc);
+    border: 1.5px solid var(--bordure);
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(27, 46, 40, 0.1);
+    max-height: 280px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+  }
+
+  .liste-suggestions.visible { display: block; }
+
+  .suggestion {
+    padding: 11px 14px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--bordure);
+    font-size: 14px;
+  }
+
+  .suggestion:last-child { border-bottom: none; }
+
+  .suggestion:hover,
+  .suggestion:focus,
+  .suggestion.actif {
+    background: var(--fond);
+  }
+
+  .suggestion .nom-lieu {
+    font-weight: 500;
+    color: var(--encre);
+  }
+
+  .suggestion .detail-lieu {
+    font-size: 12px;
+    color: var(--encre-clair);
+    margin-top: 2px;
+  }
+
+  .message-suggestion {
+    padding: 12px 14px;
+    font-size: 13px;
+    color: var(--encre-clair);
+  }
+
+  /* ===== Carte ===== */
+  #carte {
+    width: 100%;
+    height: 58vh;
+    min-height: 340px;
+    border-radius: 12px;
+    border: 1.5px solid var(--bordure);
+    background: var(--fond-carte);
+  }
+
+  @media (min-width: 700px) {
+    #carte { height: 65vh; }
+  }
+
+  /* Focus clavier visible, accessibilité */
+  a:focus-visible,
+  button:focus-visible,
+  .suggestion:focus-visible {
+    outline: 2px solid var(--sauge);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="tampon">EV</div>
+  <div class="titre-app">
+    <h1>Escales</h1>
+    <p>Hébergements de voyageurs près de chez vous</p>
+  </div>
+</header>
+
+<main>
+  <div class="zone-recherche">
+    <label class="libelle-recherche" for="champ-recherche">Rechercher une ville ou un lieu</label>
+    <input
+      type="text"
+      id="champ-recherche"
+      placeholder="Ex : Bordeaux, Lisbonne, Chiang Mai…"
+      autocomplete="off"
+    />
+    <div class="indicateur-recherche" id="indicateur-recherche"></div>
+    <div class="liste-suggestions" id="liste-suggestions" role="listbox"></div>
+  </div>
+
+  <div id="carte"></div>
+</main>
+
+<!-- Leaflet JS via cdnjs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+
+<script>
+  // ===== Initialisation de la carte =====
+  // Vue par défaut centrée sur la France, sera recentrée après une recherche
+  const carte = L.map('carte').setView([46.6, 2.2], 5);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    maxZoom: 19
+  }).addTo(carte);
+
+  let marqueurRecherche = null;
+
+  // ===== Éléments du DOM =====
+  const champRecherche = document.getElementById('champ-recherche');
+  const listeSuggestions = document.getElementById('liste-suggestions');
+  const indicateurRecherche = document.getElementById('indicateur-recherche');
+
+  let delaiRecherche = null; // pour le debounce
+  let suggestionsActuelles = [];
+
+  // ===== Géocodage via l'API Nominatim (OpenStreetMap) =====
+  async function rechercherLieux(requete) {
+    // Nominatim demande un usage raisonnable : on limite les résultats
+    // et on respecte un délai avant chaque appel (debounce plus bas)
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(requete)}&limit=5&addressdetails=1&accept-language=fr`;
+
+    const reponse = await fetch(url);
+    if (!reponse.ok) throw new Error('Échec de la requête Nominatim');
+    return reponse.json();
+  }
+
+  function afficherSuggestions(resultats) {
+    suggestionsActuelles = resultats;
+    listeSuggestions.innerHTML = '';
+
+    if (resultats.length === 0) {
+      listeSuggestions.innerHTML = '<div class="message-suggestion">Aucun lieu trouvé.</div>';
+      listeSuggestions.classList.add('visible');
+      return;
+    }
+
+    resultats.forEach((lieu, index) => {
+      const item = document.createElement('div');
+      item.className = 'suggestion';
+      item.setAttribute('role', 'option');
+      item.tabIndex = 0;
+
+      const nomPrincipal = lieu.display_name.split(',')[0];
+      const detail = lieu.display_name.split(',').slice(1, 3).join(',').trim();
+
+      item.innerHTML = `
+        <div class="nom-lieu">${nomPrincipal}</div>
+        <div class="detail-lieu">${detail}</div>
+      `;
+
+      const selectionner = () => choisirLieu(lieu);
+      item.addEventListener('click', selectionner);
+      item.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') selectionner();
+      });
+
+      listeSuggestions.appendChild(item);
+    });
+
+    listeSuggestions.classList.add('visible');
+  }
+
+  function choisirLieu(lieu) {
+    const lat = parseFloat(lieu.lat);
+    const lon = parseFloat(lieu.lon);
+
+    carte.setView([lat, lon], 13);
+
+    if (marqueurRecherche) carte.removeLayer(marqueurRecherche);
+    marqueurRecherche = L.marker([lat, lon]).addTo(carte)
+      .bindPopup(lieu.display_name.split(',')[0])
+      .openPopup();
+
+    champRecherche.value = lieu.display_name.split(',')[0];
+    listeSuggestions.classList.remove('visible');
+  }
+
+  // ===== Écoute de la saisie avec debounce =====
+  champRecherche.addEventListener('input', () => {
+    const valeur = champRecherche.value.trim();
+
+    clearTimeout(delaiRecherche);
+
+    if (valeur.length < 3) {
+      listeSuggestions.classList.remove('visible');
+      return;
+    }
+
+    delaiRecherche = setTimeout(async () => {
+      indicateurRecherche.classList.add('visible');
+      try {
+        const resultats = await rechercherLieux(valeur);
+        afficherSuggestions(resultats);
+      } catch (erreur) {
+        listeSuggestions.innerHTML = '<div class="message-suggestion">Erreur lors de la recherche. Réessayez.</div>';
+        listeSuggestions.classList.add('visible');
+      } finally {
+        indicateurRecherche.classList.remove('visible');
+      }
+    }, 400); // délai pour limiter les appels à Nominatim
+  });
+
+  // Fermer les suggestions si on clique ailleurs
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.zone-recherche')) {
+      listeSuggestions.classList.remove('visible');
+    }
+  });
+</script>
+
+</body>
+</html>
