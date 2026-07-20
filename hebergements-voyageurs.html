@@ -203,6 +203,211 @@
     #carte { height: 65vh; }
   }
 
+  /* ===== Panneau de filtres (types + distance) ===== */
+  .panneau-filtres {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 14px;
+    padding: 12px 14px;
+    background: var(--blanc);
+    border: 1.5px solid var(--bordure);
+    border-radius: 10px;
+  }
+
+  @media (min-width: 700px) {
+    .panneau-filtres {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
+  .filtres-types {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+  }
+
+  .filtre-type-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .filtre-type-item input {
+    accent-color: var(--sauge);
+    cursor: pointer;
+  }
+
+  .legende-pastille {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .filtre-distance {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--encre-clair);
+  }
+
+  .filtre-distance select {
+    font-family: var(--police-texte);
+    font-size: 13px;
+    padding: 6px 10px;
+    border: 1.5px solid var(--bordure);
+    border-radius: 8px;
+    background: var(--fond);
+    color: var(--encre);
+  }
+
+  .filtre-distance select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .compteur-resultats {
+    font-family: var(--police-donnee);
+    font-size: 12px;
+    color: var(--encre-clair);
+    white-space: nowrap;
+  }
+
+  /* ===== Icônes de marqueurs (tampon miniature par type) ===== */
+  .icone-tampon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px dashed var(--blanc);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    box-shadow: 0 2px 6px rgba(27, 46, 40, 0.35);
+  }
+
+  /* ===== Contenu des popups Leaflet ===== */
+  .leaflet-popup-content-wrapper {
+    border-radius: 10px;
+    font-family: var(--police-texte);
+  }
+
+  .popup-hebergement { min-width: 190px; }
+
+  .popup-hebergement .popup-type {
+    display: inline-block;
+    font-family: var(--police-donnee);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 3px 8px;
+    border-radius: 20px;
+    color: var(--blanc);
+    margin-bottom: 6px;
+  }
+
+  .popup-hebergement h3 {
+    font-family: var(--police-titre);
+    font-size: 15px;
+    margin: 0 0 4px;
+  }
+
+  .popup-hebergement .popup-lieu {
+    font-size: 12px;
+    color: var(--encre-clair);
+    margin-bottom: 6px;
+  }
+
+  .popup-hebergement .popup-description {
+    font-size: 13px;
+    line-height: 1.4;
+    margin-bottom: 10px;
+  }
+
+  .popup-hebergement .popup-lien {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--blanc);
+    background: var(--sauge);
+    padding: 7px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+  }
+
+  .popup-hebergement .popup-lien:hover {
+    background: var(--encre);
+  }
+
+  /* ===== Panneau "Infos pratiques" (alimenté par l'API Claude + recherche web) ===== */
+  .panneau-infos {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding: 14px 16px;
+    background: var(--blanc);
+    border: 1.5px solid var(--bordure);
+    border-radius: 10px;
+  }
+
+  .panneau-infos.visible { display: flex; }
+
+  .panneau-infos-entete {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .panneau-infos-entete h2 {
+    font-family: var(--police-titre);
+    font-size: 15px;
+    margin: 0;
+  }
+
+  .bouton-actualiser {
+    font-family: var(--police-texte);
+    font-size: 12px;
+    padding: 5px 10px;
+    border: 1.5px solid var(--bordure);
+    border-radius: 8px;
+    background: var(--fond);
+    color: var(--encre-clair);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .bouton-actualiser:hover { background: var(--bordure); }
+  .bouton-actualiser:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .spinner-infos {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--bordure);
+    border-top-color: var(--accent-fonce);
+    border-radius: 50%;
+    animation: tourner 0.7s linear infinite;
+    display: none;
+  }
+
+  .spinner-infos.visible { display: block; }
+
+  #contenu-infos p {
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 0 0 4px;
+    color: var(--encre);
+  }
+
+  .infos-erreur { color: var(--erreur); }
+
   /* Focus clavier visible, accessibilité */
   a:focus-visible,
   button:focus-visible,
@@ -235,6 +440,30 @@
     <div class="liste-suggestions" id="liste-suggestions" role="listbox"></div>
   </div>
 
+  <div class="panneau-infos" id="panneau-infos">
+    <div class="panneau-infos-entete">
+      <h2 id="titre-infos">Infos pratiques</h2>
+      <button class="bouton-actualiser" id="bouton-actualiser-infos" type="button">Actualiser</button>
+    </div>
+    <div class="spinner-infos" id="spinner-infos"></div>
+    <div id="contenu-infos"></div>
+  </div>
+
+  <div class="panneau-filtres">
+    <div class="filtres-types" id="filtres-types"></div>
+    <div class="filtre-distance">
+      <label for="select-distance" id="libelle-distance">Recherchez un lieu pour filtrer par distance</label>
+      <select id="select-distance" disabled>
+        <option value="0">Toute la carte</option>
+        <option value="10">10 km</option>
+        <option value="25" selected>25 km</option>
+        <option value="50">50 km</option>
+        <option value="100">100 km</option>
+      </select>
+    </div>
+    <div class="compteur-resultats" id="compteur-resultats"></div>
+  </div>
+
   <div id="carte"></div>
 </main>
 
@@ -252,6 +481,186 @@
   }).addTo(carte);
 
   let marqueurRecherche = null;
+
+  // ===== Configuration visuelle par type de réseau =====
+  // Couleurs cohérentes avec les jetons de design, réutilisées pour icônes,
+  // badges de popup et légende
+  const typesReseaux = {
+    couchsurfing: { libelle: 'Couchsurfing', couleur: '#C79A3D', abbrev: 'CS' },
+    wwoofing:     { libelle: 'WWOOFing',     couleur: '#3D6B5C', abbrev: 'WW' },
+    autre:        { libelle: 'Autre réseau', couleur: '#6B5CA5', abbrev: '•' }
+  };
+
+  // ===== Données de démonstration =====
+  // Tableau JSON en dur — à remplacer par une vraie base de données.
+  // Chaque entrée pointe vers un lien de profil externe, jamais de contact direct.
+  const hebergementsDemo = [
+    {
+      id: 1, nom: 'Chez Amina', type: 'couchsurfing',
+      ville: 'Bordeaux, France', lat: 44.8412, lon: -0.5798,
+      description: 'Canapé disponible dans un appartement chaleureux près des quais.',
+      lienProfil: 'https://www.couchsurfing.com/'
+    },
+    {
+      id: 2, nom: 'Ferme du Vallon', type: 'wwoofing',
+      ville: 'Sarlat-la-Canéda, France', lat: 44.8905, lon: 1.2160,
+      description: 'Maraîchage bio, hébergement en dortoir contre 4h d\'aide par jour.',
+      lienProfil: 'https://wwoof.fr/'
+    },
+    {
+      id: 3, nom: 'Chez Julien & Marta', type: 'couchsurfing',
+      ville: 'Lyon, France', lat: 45.7640, lon: 4.8357,
+      description: 'Matelas gonflable dans le salon, quartier animé de la Croix-Rousse.',
+      lienProfil: 'https://www.couchsurfing.com/'
+    },
+    {
+      id: 4, nom: 'Refuge des Cimes', type: 'autre',
+      ville: 'Annecy, France', lat: 45.8992, lon: 6.1294,
+      description: 'Échange gîte contre coup de main sur un réseau d\'hospitalité local.',
+      lienProfil: 'https://www.helpx.net/'
+    },
+    {
+      id: 5, nom: 'Domaine Terra Viva', type: 'wwoofing',
+      ville: 'Avignon, France', lat: 43.9493, lon: 4.8055,
+      description: 'Vignoble en permaculture, chambre individuelle et repas partagés.',
+      lienProfil: 'https://wwoof.fr/'
+    },
+    {
+      id: 6, nom: 'Chez Yasmine', type: 'couchsurfing',
+      ville: 'Lisbonne, Portugal', lat: 38.7223, lon: -9.1393,
+      description: 'Chambre d\'ami avec vue sur le Tage, accueil de voyageurs solo.',
+      lienProfil: 'https://www.couchsurfing.com/'
+    },
+    {
+      id: 7, nom: 'Ecolieu Les Sources', type: 'autre',
+      ville: 'Toulouse, France', lat: 43.6047, lon: 1.4442,
+      description: 'Habitat participatif ouvert aux voyageurs pour quelques nuits.',
+      lienProfil: 'https://www.helpx.net/'
+    },
+    {
+      id: 8, nom: 'Verger de la Colline', type: 'wwoofing',
+      ville: 'Nantes, France', lat: 47.2184, lon: -1.5536,
+      description: 'Petit verger familial, cabane en bois pour les bénévoles.',
+      lienProfil: 'https://wwoof.fr/'
+    }
+  ];
+
+  // Crée une icône Leaflet en forme de tampon coloré selon le type
+  function creerIconeTampon(type) {
+    const config = typesReseaux[type] || typesReseaux.autre;
+    return L.divIcon({
+      className: '', // évite les styles par défaut de Leaflet
+      html: `<div class="icone-tampon" style="background:${config.couleur}">${config.abbrev}</div>`,
+      iconSize: [30, 30],
+      iconAnchor: [15, 15],
+      popupAnchor: [0, -15]
+    });
+  }
+
+  // Construit le contenu HTML d'une popup d'hébergement
+  function construirePopup(hebergement) {
+    const config = typesReseaux[hebergement.type] || typesReseaux.autre;
+    return `
+      <div class="popup-hebergement">
+        <span class="popup-type" style="background:${config.couleur}">${config.libelle}</span>
+        <h3>${hebergement.nom}</h3>
+        <div class="popup-lieu">${hebergement.ville}</div>
+        <div class="popup-description">${hebergement.description}</div>
+        <a class="popup-lien" href="${hebergement.lienProfil}" target="_blank" rel="noopener noreferrer">
+          Voir le profil ↗
+        </a>
+      </div>
+    `;
+  }
+
+  // Groupe de calques dédié aux marqueurs d'hébergement,
+  // pour pouvoir les effacer/redessiner facilement lors du filtrage
+  const groupeHebergements = L.layerGroup().addTo(carte);
+
+  // ===== État des filtres =====
+  const filtresTypesActifs = new Set(Object.keys(typesReseaux)); // tous actifs par défaut
+  let rayonKm = 0; // 0 = pas de limite de distance
+  let pointReference = null; // { lat, lon } du dernier lieu recherché
+
+  // Formule de Haversine : distance en km entre deux points géographiques
+  function calculerDistanceKm(lat1, lon1, lat2, lon2) {
+    const rayonTerre = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) ** 2 +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLon / 2) ** 2;
+    return rayonTerre * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+
+  // Applique les filtres actifs (type + distance) et redessine les marqueurs
+  function filtrerEtAfficher() {
+    const resultats = hebergementsDemo.filter((hebergement) => {
+      if (!filtresTypesActifs.has(hebergement.type)) return false;
+
+      if (pointReference && rayonKm > 0) {
+        const distance = calculerDistanceKm(
+          pointReference.lat, pointReference.lon,
+          hebergement.lat, hebergement.lon
+        );
+        if (distance > rayonKm) return false;
+      }
+
+      return true;
+    });
+
+    groupeHebergements.clearLayers();
+    resultats.forEach((hebergement) => {
+      L.marker([hebergement.lat, hebergement.lon], {
+        icon: creerIconeTampon(hebergement.type)
+      })
+        .addTo(groupeHebergements)
+        .bindPopup(construirePopup(hebergement));
+    });
+
+    document.getElementById('compteur-resultats').textContent =
+      `${resultats.length} / ${hebergementsDemo.length} hébergement(s)`;
+  }
+
+  // Construit les cases à cocher de filtre par type (fait aussi office de légende)
+  function construireFiltresTypes() {
+    const conteneur = document.getElementById('filtres-types');
+    conteneur.innerHTML = Object.entries(typesReseaux).map(([cle, config]) => `
+      <label class="filtre-type-item">
+        <input type="checkbox" data-type="${cle}" checked>
+        <span class="legende-pastille" style="background:${config.couleur}"></span>
+        ${config.libelle}
+      </label>
+    `).join('');
+
+    conteneur.querySelectorAll('input[type="checkbox"]').forEach((case_) => {
+      case_.addEventListener('change', () => {
+        const type = case_.dataset.type;
+        if (case_.checked) filtresTypesActifs.add(type);
+        else filtresTypesActifs.delete(type);
+        filtrerEtAfficher();
+      });
+    });
+  }
+
+  // ===== Filtre de distance =====
+  const selectDistance = document.getElementById('select-distance');
+  const libelleDistance = document.getElementById('libelle-distance');
+
+  selectDistance.addEventListener('change', () => {
+    rayonKm = parseInt(selectDistance.value, 10);
+    filtrerEtAfficher();
+  });
+
+  // Active le filtre de distance une fois qu'un lieu a été recherché
+  function activerFiltreDistance() {
+    selectDistance.disabled = false;
+    libelleDistance.textContent = 'Rayon autour du lieu recherché';
+    rayonKm = parseInt(selectDistance.value, 10);
+  }
+
+  construireFiltresTypes();
+  filtrerEtAfficher();
 
   // ===== Éléments du DOM =====
   const champRecherche = document.getElementById('champ-recherche');
@@ -308,6 +717,78 @@
     listeSuggestions.classList.add('visible');
   }
 
+  // ===== Panneau "Infos pratiques" =====
+  // Appelle l'API Claude (intégrée à l'artifact, aucune clé à gérer) avec
+  // l'outil de recherche web pour donner des informations réelles et à jour
+  // sur la destination recherchée. Ne concerne jamais les annonces
+  // Couchsurfing/WWOOF elles-mêmes, uniquement des infos pratiques générales.
+  let dernierNomLieu = null;
+
+  const panneauInfos = document.getElementById('panneau-infos');
+  const titreInfos = document.getElementById('titre-infos');
+  const contenuInfos = document.getElementById('contenu-infos');
+  const spinnerInfos = document.getElementById('spinner-infos');
+  const boutonActualiserInfos = document.getElementById('bouton-actualiser-infos');
+
+  async function obtenirInfosPratiques(nomLieu) {
+    dernierNomLieu = nomLieu;
+    panneauInfos.classList.add('visible');
+    titreInfos.textContent = `Infos pratiques — ${nomLieu}`;
+    contenuInfos.innerHTML = '';
+    spinnerInfos.classList.add('visible');
+    boutonActualiserInfos.disabled = true;
+
+    try {
+      const reponse = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 1000,
+          messages: [{
+            role: 'user',
+            content: `Tu conseilles des voyageurs qui logent chez l'habitant (Couchsurfing, WWOOFing) à "${nomLieu}". Cherche des informations à jour et réponds uniquement en français par une liste de 4 à 5 puces courtes et concrètes : sécurité, coutumes locales utiles pour un séjour chez l'habitant, transports sur place, un conseil culturel. Aucun préambule, aucun titre, une puce "•" par ligne, pas de mise en forme markdown.`
+          }],
+          tools: [{ type: 'web_search_20250305', name: 'web_search' }]
+        })
+      });
+
+      if (!reponse.ok) throw new Error('Échec de la requête API');
+      const donnees = await reponse.json();
+
+      const texte = (donnees.content || [])
+        .filter((bloc) => bloc.type === 'text')
+        .map((bloc) => bloc.text)
+        .join('\n')
+        .trim();
+
+      if (!texte) throw new Error('Réponse vide');
+
+      // Échappement HTML avant insertion, pour éviter toute injection
+      const texteEchappe = texte
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+      contenuInfos.innerHTML = texteEchappe
+        .split('\n')
+        .map((ligne) => ligne.trim())
+        .filter((ligne) => ligne.length > 0)
+        .map((ligne) => `<p>${ligne}</p>`)
+        .join('');
+
+    } catch (erreur) {
+      contenuInfos.innerHTML = '<p class="infos-erreur">Impossible de récupérer les informations pour le moment. Réessayez plus tard.</p>';
+    } finally {
+      spinnerInfos.classList.remove('visible');
+      boutonActualiserInfos.disabled = false;
+    }
+  }
+
+  boutonActualiserInfos.addEventListener('click', () => {
+    if (dernierNomLieu) obtenirInfosPratiques(dernierNomLieu);
+  });
+
   function choisirLieu(lieu) {
     const lat = parseFloat(lieu.lat);
     const lon = parseFloat(lieu.lon);
@@ -321,6 +802,14 @@
 
     champRecherche.value = lieu.display_name.split(',')[0];
     listeSuggestions.classList.remove('visible');
+
+    // Le lieu recherché devient le point de référence du filtre de distance
+    pointReference = { lat, lon };
+    activerFiltreDistance();
+    filtrerEtAfficher();
+
+    // Récupère des informations pratiques à jour sur la destination
+    obtenirInfosPratiques(lieu.display_name.split(',')[0]);
   }
 
   // ===== Écoute de la saisie avec debounce =====
